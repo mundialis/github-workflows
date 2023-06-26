@@ -12,7 +12,7 @@ on: [push]
 
 jobs:
   lint:
-    uses: mundialis/workflows/.github/github-workflows/linting.yml@main
+    uses: mundialis/github-workflows/.github/workflows/linting.yml@main
     with:
       pylint-version: '2.17.4'
 ```
