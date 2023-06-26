@@ -36,7 +36,7 @@ jobs:
         flake8 --config=.flake8 --count --statistics --show-source .
   pylint:
     name: pylint
-    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.pylint-version != '' }}
+    if: ${{ inputs.pylint-version != '' }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
