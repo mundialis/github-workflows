@@ -19,6 +19,7 @@ on:
 jobs:
   flake8:
     name: flake8
+    if: ${{ inputs.flake8-version != '' }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -57,6 +58,7 @@ jobs:
         pylint --rc-file=.pylintrc_allowed_to_fail .
   black:
     name: black
+    if: ${{ inputs.black-version != '' }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
