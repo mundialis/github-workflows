@@ -6,11 +6,11 @@ on:
       black-version:
         required: false
         type: string
-        default: '23.1.0'
+        default: '23.3.0'
       flake8-version:
         required: false
         type: string
-        default: '3.8.4'
+        default: '6.0.0'
       pylint-version:
         required: false
         type: string
