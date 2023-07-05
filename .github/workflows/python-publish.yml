@@ -7,9 +7,9 @@ on:
         required: true
         type: boolean
         default: false
-    secrets:
-      password:
-        required: true
+    # secrets:
+    #   password:
+    #     required: true
 
 jobs:
   upload-python-package:
@@ -46,7 +46,7 @@ jobs:
         if: ${{ inputs.test_pypi }}
         with:
           repository_url: https://test.pypi.org/legacy/
-          password: ${{ secrets.password }}
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           packages_dir: build/
           verbose: true
       # - name: Publish package to pypi
