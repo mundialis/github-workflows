@@ -3,13 +3,10 @@ name: Upload Python Package
 on:
   workflow_call:
     inputs:
-      repository_url:
-        required: false
-        type: string
-    secrets:
-      password:
+      test_pypi:
         required: true
-        type: string
+        type: boolean
+        default: false
 
 jobs:
   upload-python-package:
@@ -41,10 +38,18 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: build/*.whl
-      - name: Publish package
+      - name: Publish package to test pypi
         uses: pypa/gh-action-pypi-publish@release/v1
+        if: ${{ inputs.test_pypi }}
         with:
-          repository_url: ${{ inputs.repository_url }}
-          password: ${{ secrets.password }}
+          repository_url: https://test.pypi.org/legacy/
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          packages_dir: build/
+          verbose: true
+      - name: Publish package to pypi
+        uses: pypa/gh-action-pypi-publish@release/v1
+        if: ${{ inputs.test_pypi == 'false' }}
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
           packages_dir: build/
           verbose: true
