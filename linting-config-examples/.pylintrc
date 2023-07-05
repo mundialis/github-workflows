@@ -33,7 +33,7 @@ max-try-statements=4 # Default: 1
 [FORMAT]
 max-line-length=80 # Default: 100
 max-module-lines=800 # Default: 1000
-ignore-long-lines=.*COPYRIGHT:.* |# . description:.*|\s*(# )?.*http.:\/\/\S+?
+ignore-long-lines=.*COPYRIGHT:.* |# . description:.*|\s*(# )?.*http.:\/\/\S+?|# %%*
 
 [VARIABLES]
 additional-builtins=_ # Default: ()
