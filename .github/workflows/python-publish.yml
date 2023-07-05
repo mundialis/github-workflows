@@ -4,7 +4,6 @@ on:
   workflow_call:
     inputs:
       test_pypi:
-        required: true
         type: boolean
         default: false
     secrets:
