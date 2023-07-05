@@ -50,7 +50,7 @@ jobs:
           verbose: true
       - name: Publish package to pypi
         uses: pypa/gh-action-pypi-publish@release/v1
-        if: ${{ inputs.test_pypi == 'false' }}
+        if: ${{ inputs.test_pypi == false }}
         with:
           password: ${{ secrets.PYPI_PASSWORD }}
           packages_dir: build/
