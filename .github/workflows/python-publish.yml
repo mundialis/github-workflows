@@ -7,9 +7,6 @@ on:
         required: true
         type: boolean
         default: false
-    # secrets:
-    #   password:
-    #     required: true
     secrets:
       PYPI_PASSWORD:
         required: true
@@ -46,17 +43,16 @@ jobs:
           files: build/*.whl
       - name: Publish package to test pypi
         uses: pypa/gh-action-pypi-publish@release/v1
-        # if: ${{ inputs.test_pypi }}
+        if: ${{ inputs.test_pypi }}
         with:
           repository_url: https://test.pypi.org/legacy/
           password: ${{ secrets.PYPI_PASSWORD }}
-          # password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           packages_dir: build/
           verbose: true
-      # - name: Publish package to pypi
-      #   uses: pypa/gh-action-pypi-publish@release/v1
-      #   if: ${{ inputs.test_pypi == 'false' }}
-      #   with:
-      #     password: ${{ secrets.PYPI_API_TOKEN }}
-      #     packages_dir: build/
-      #     verbose: true
+      - name: Publish package to pypi
+        uses: pypa/gh-action-pypi-publish@release/v1
+        if: ${{ inputs.test_pypi == 'false' }}
+        with:
+          password: ${{ secrets.PYPI_PASSWORD }}
+          packages_dir: build/
+          verbose: true
