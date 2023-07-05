@@ -7,6 +7,9 @@ on:
         required: true
         type: boolean
         default: false
+    secrets:
+      password:
+        required: true
 
 jobs:
   upload-python-package:
@@ -43,13 +46,13 @@ jobs:
         if: ${{ inputs.test_pypi }}
         with:
           repository_url: https://test.pypi.org/legacy/
-          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          password: ${{ secrets.password }}
           packages_dir: build/
           verbose: true
-      - name: Publish package to pypi
-        uses: pypa/gh-action-pypi-publish@release/v1
-        if: ${{ inputs.test_pypi == 'false' }}
-        with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
-          packages_dir: build/
-          verbose: true
+      # - name: Publish package to pypi
+      #   uses: pypa/gh-action-pypi-publish@release/v1
+      #   if: ${{ inputs.test_pypi == 'false' }}
+      #   with:
+      #     password: ${{ secrets.PYPI_API_TOKEN }}
+      #     packages_dir: build/
+      #     verbose: true
