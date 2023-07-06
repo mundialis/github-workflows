@@ -1,6 +1,7 @@
 # workflows
 
 ## Python Linting
+
 The python3 linting workflow uses `black`, `flake8` and `pylint` to check the
 code quality.
 
@@ -50,4 +51,45 @@ jobs:
     # set NC_TEST_DATA to 'NC' for using NC GRASS GIS sample location
     # with:
     #   NC_TEST_DATA: 'NC'
+```
+
+
+## Python Publishing
+
+The python publish workflow creates a wheel and uploads it to release assets.
+Also the python package is published on PyPI or test PyPI.
+
+To use this workflow in the repo the **secrets** `TEST_PYPI_API_TOKEN` or
+`PYPI_API_TOKEN` have to be set. Additional, you have to check under `Settings > Actions > General > Workflow permissions` the `Read and write permissions`.
+
+For publishing on test PyPI use e.g.:
+```
+name: Upload Python Package to test PyPI
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish-python:
+    uses: mundialis/github-workflows/.github/workflows/python-publish.yml@main
+    with:
+      test_pypi: true
+    secrets:
+      PYPI_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
+```
+
+For publishing on PyPI use e.g.:
+```
+name: Upload Python Package to PyPI
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish-python:
+    uses: mundialis/github-workflows/.github/workflows/python-publish.yml@main
+    secrets:
+      PYPI_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
 ```
