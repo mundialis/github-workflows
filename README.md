@@ -20,3 +20,9 @@ Examples how `flake8` and `pylint` can be configured are in the [linting-config-
 
 If one of the versions is set to an empty string the code quality check will be
 skipped.
+
+
+## GRASS GIS addon tests
+
+The GRASS GIS addon tests can be added to a repo with one GRASS GIS test.
+The workflow downloads the NC sample location.
