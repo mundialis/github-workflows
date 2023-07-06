@@ -18,10 +18,10 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
     - name: add Dockerfile and test skript
-      run |
+      run: |
         ( mkdir -p test-docker && cd test-docker && \
           wget https://raw.githubusercontent.com/mundialis/github-workflows/grass-tests/test-docker/Dockerfile \
-          && wget https://raw.githubusercontent.com/mundialis/github-workflows/grass-tests/test-docker/test.sh )        
+          && wget https://raw.githubusercontent.com/mundialis/github-workflows/grass-tests/test-docker/test.sh )
     - name: Tests of GRASS GIS addon
       id: docker_build
       uses: docker/build-push-action@v4
