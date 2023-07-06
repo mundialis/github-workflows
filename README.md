@@ -29,4 +29,25 @@ skipped.
 ## GRASS GIS addon tests
 
 The GRASS GIS addon tests can be added to a repo with one GRASS GIS test.
-The workflow downloads the NC sample location.
+
+The workflow downloads the NC sample location if the workflow is started with
+`NC_TEST_DATA: 'NC'`.
+
+
+You can use it e.g. like this:
+```
+name: Run tests for GRASS GIS addons
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ main ]
+
+jobs:
+  tests:
+    uses: mundialis/github-workflows/.github/workflows/grass-tests.yml@grass-tests
+    # set NC_TEST_DATA to 'NC' for using NC GRASS GIS sample location
+    # with:
+    #   NC_TEST_DATA: 'NC'
+```
