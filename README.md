@@ -31,7 +31,7 @@ skipped.
 
 The GRASS GIS addon tests can be added to a repo with one GRASS GIS test.
 
-The workflow downloads the NC sample location if the workflow is started with
+The workflow downloads the NC sample location if the workflow is configured using `with`
 `NC_TEST_DATA: 'NC'`.
 
 
