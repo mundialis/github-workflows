@@ -54,6 +54,7 @@ jobs:
       if: ${{ hashFiles('.pylintrc') == '' }}
       run: |
         echo ".pylintrc does not exists."
+        wget https://raw.githubusercontent.com/mundialis/github-workflows/main/linting-config-examples/.pylintrc
       # if [ ! -f ".pylintrc_allowed_to_fail" ]; then echo ".pylintrc_allowed_to_fail does not exists." ;  else echo "exists" ; fi
     - name: Lint with Pylint
       run: |
