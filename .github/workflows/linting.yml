@@ -51,10 +51,12 @@ jobs:
         pip3 install pylint==${{ inputs.pylint-version }}
         pylint --version
     - name: Configure Pylint
+      if: ${{ hashFiles('.pylintrc') == '' }}
       run: |
-        if [ ! -f ".pylintrc" ]; then echo ".pylintrc does not exists." ;  else echo "exists" ; fi
-        if [ ! -f ".pylintrc_allowed_to_fail" ]; then echo ".pylintrc_allowed_to_fail does not exists." ;  else echo "exists" ; fi
+        echo ".pylintrc does not exists."
+      # if [ ! -f ".pylintrc_allowed_to_fail" ]; then echo ".pylintrc_allowed_to_fail does not exists." ;  else echo "exists" ; fi
     - name: Lint with Pylint
+      if: steps.check_files.outputs.files_exists == 'true'
       run: |
         pylint .
     - name: Lint with Pylint - More strict, allowed to fail
