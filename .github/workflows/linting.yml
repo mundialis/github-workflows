@@ -50,6 +50,10 @@ jobs:
         python -m pip install --upgrade pip
         pip3 install pylint==${{ inputs.pylint-version }}
         pylint --version
+    - name: Configure Pylint
+      run: |
+        if [ ! -f ".pylintrc" ]; then echo ".pylintrc does not exists." else echo "exists" fi
+        if [ ! -f ".pylintrc_allowed_to_fail" ]; then echo ".pylintrc_allowed_to_fail does not exists." else echo "exists" fi
     - name: Lint with Pylint
       run: |
         pylint .
