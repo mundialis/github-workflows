@@ -40,7 +40,7 @@ on:
     types: [published]
 
 jobs:
-  lint:
+  publish-python:
     uses: mundialis/github-workflows/.github/workflows/python-publish.yml@main
     with:
       test_pypi: true
@@ -57,7 +57,7 @@ on:
     types: [published]
 
 jobs:
-  lint:
+  publish-python:
     uses: mundialis/github-workflows/.github/workflows/python-publish.yml@main
     secrets:
       PYPI_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
