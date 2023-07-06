@@ -25,7 +25,7 @@ skipped.
 
 ## Python Publishing
 
-The python publish workflow creats a wheel and uploads it to release assets.
+The python publish workflow creates a wheel and uploads it to release assets.
 Also the python package is published on PyPI or test PyPI.
 
 To use this workflow in the repo the **secrets** `TEST_PYPI_API_TOKEN` or
