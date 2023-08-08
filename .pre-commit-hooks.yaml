@@ -1,5 +1,5 @@
 -   id: linting
     name: linting
     description: Lints python files with flake8, black and pylint.
-    entry: echo test
+    entry: ./pre_commit_hooks/linting.sh
     language: script
