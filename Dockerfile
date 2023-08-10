@@ -1,11 +1,19 @@
 FROM python:3-slim
 
-ARG FLAKE8_VERSION
-# RUN pip3 install flake8==${{ ${FLAKE8_VERSION} }}
-RUN pip3 install flake8
-RUN flake8 --version
+RUN apt-get update && apt-get install jq -y
+RUN pip install --upgrade pip yq virtualenv
 
-COPY . /src/
-RUN ls -lah /src/
+# Copy linting workflow to identify linter versions if needed
+ENV WORKFLOW_LINTING_WORKFLOW=/github-workflows/.github/workflows/linting.yml
+COPY .github/workflows/linting.yml $WORKFLOW_LINTING_WORKFLOW
+# Install linters with default versions
+RUN echo black==$(cat $WORKFLOW_LINTING_WORKFLOW | yq .on.workflow_call.inputs | jq -r '."black-version"'.default) >> /requirements.txt
+RUN echo flake8==$(cat $WORKFLOW_LINTING_WORKFLOW | yq .on.workflow_call.inputs | jq -r '."flake8-version"'.default) >> /requirements.txt
+RUN echo pylint==$(cat $WORKFLOW_LINTING_WORKFLOW | yq .on.workflow_call.inputs | jq -r '."pylint-version"'.default) >> /requirements.txt
+RUN pip install -r requirements.txt
 
-RUN flake8 --config=/src/.flake8 --count --statistics --show-source .
+# Copy script to be executed on docker startup
+# when code repository is mounted
+COPY pre_commit_hooks/linting.sh /linting.sh
+
+CMD [ "bash /linting.sh" ]
