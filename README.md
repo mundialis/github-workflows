@@ -102,7 +102,7 @@ jobs:
 The python3 linting pre-commit hook uses `black`, `flake8` and `pylint` to check the
 code quality.
 
-You can use it e.g. like this:
+You can use it by adding a `pre-commit-config.yml` file containing e.g.:
 ```
 repos:
 -   repo: https://github.com/mundialis/github-workflows
@@ -110,6 +110,14 @@ repos:
     hooks:
     -   id: linting
 ```
+
+It might take a while initially because the Dockerfile is build, after that cache is used.
+To enable pre-commit, run
+```
+pip install pre-commit
+pre-commit install
+```
+Then the code is linted before every commit.
 
 As configuration is reused from github workflows, a linting workflow using above reusable
 workflow must exist at `.github/workflows/linting.yml`. It is configurable:
