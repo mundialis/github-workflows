@@ -111,6 +111,8 @@ repos:
     -   id: linting
 ```
 
+An extended example can be found at [.pre-commit-example-config.yml](.pre-commit-example-config.yml)
+
 It might take a while initially because the Dockerfile is build, after that cache is used.
 To enable pre-commit, run
 ```
