@@ -128,3 +128,13 @@ In general what happens during pre-commit is that the Dockerfile of this reposit
 while having access to all files in this repository - if needed later, they need to be copied.
 The linting.sh is then executed with the code repository mounted, so all files of that
 repository are accessible only during runtime of the docker container.
+
+### Development
+To develop the pre-commit hook locally, cd into a code repository where you want to use it and run
+```
+pre-commit try-repo ../../github-workflows linting -a --verbose
+```
+If you want to start a container to debug the executed file, check last build docker image and run
+```
+docker run --rm -it --entrypoint sh -v $PWD:/src:rw,Z pre-commit-33a9cd78e77e8963da808aa71baf0b54
+```
