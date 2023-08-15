@@ -20,8 +20,8 @@ jobs:
 Examples how `flake8` and `pylint` can be configured are in the
 [linting-config-examples](https://github.com/mundialis/github-workflows/blob/main/linting-config-examples)
 folder. The `pylint` configuration files do not need to be created if they
-are not to be customized, scince they will be copied by the workflow if thes
-do not exists.
+are not to be customized, scince they will be copied by the workflow if they
+  do not exists.
 
 If one of the versions is set to an empty string the code quality check will be
 skipped.
@@ -93,3 +93,38 @@ jobs:
     secrets:
       PYPI_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
 ```
+
+
+# pre-commit
+
+## Python Linting
+
+The python3 linting pre-commit hook uses `black`, `flake8` and `pylint` to check the
+code quality.
+
+You can use it e.g. like this:
+```
+repos:
+-   repo: https://github.com/mundialis/github-workflows
+    rev: 8a5bab5f1b3e18d8edb8cb5d78a31e3b6b4646c5
+    hooks:
+    -   id: linting
+```
+
+As configuration is reused from github workflows, a linting workflow using above reusable
+workflow must exist at `.github/workflows/linting.yml`. It is configurable:
+- Linter versions:
+  - Default versions specified in github-workflows/.github/workflows/linting.yml are used.
+  - If overwritten in workflow which uses this workflow, only '' is supported for now
+    to skip this linter.
+  - Overwriting the version is not supported yet, the default version
+    will still be used due to permission errors.
+- Linter config files:
+  - Files in code repository will be used.
+  - If no config file in code repository exists, will be downloaded from github-workflows
+    from main branch (same behaviour as in workflow)
+
+In general what happens during pre-commit is that the Dockerfile of this repository is build
+while having access to all files in this repository - if needed later, they need to be copied.
+The linting.sh is then executed with the code repository mounted, so all files of that
+repository are accessible only during runtime of the docker container.
