@@ -99,7 +99,7 @@ echo "black: `black --version`"
 # lint #
 ########
 
-cd /src
+cd $CODE_REPO_PATH
 
 if [ $RUN_FLAKE8 != "FALSE" ]
 then
