@@ -105,7 +105,7 @@ if [ $RUN_FLAKE8 != "FALSE" ]
 then
     echo
     echo "FLAKE8:"
-    flake8 --config=/src/.flake8 --count --statistics --show-source .
+    flake8 --config=.flake8 --count --statistics --show-source .
 else
     echo
     echo "FLAKE8 configured to be skipped"
@@ -115,7 +115,7 @@ if [ $RUN_PYLINT != "FALSE" ]
 then
     echo
     echo "PYLINT:"
-    if test -f "/src/.pylintrc"
+    if test -f ".pylintrc"
     then
         echo ".pylintrc exists"
     else
@@ -127,7 +127,7 @@ then
 
     echo
     echo "PYLINT more strict:"
-    if test -f "/src/.pylintrc_allowed_to_fail"
+    if test -f ".pylintrc_allowed_to_fail"
     then
         echo ".pylintrc_allowed_to_fail exists"
     else
