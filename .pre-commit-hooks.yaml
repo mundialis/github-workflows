@@ -1,0 +1,4 @@
+-   id: linting
+    name: linting (via docker)
+    entry: /linting.sh
+    language: docker
