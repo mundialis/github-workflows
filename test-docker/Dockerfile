@@ -1,4 +1,4 @@
-FROM osgeo/grass-gis:stable-alpine
+FROM osgeo/grass-gis:releasebranch_8_2-alpine
 
 ARG NC_TEST_DATA=""
 
