@@ -106,7 +106,7 @@ You can use it by adding a `pre-commit-config.yml` file containing e.g.:
 ```
 repos:
 -   repo: https://github.com/mundialis/github-workflows
-    rev: 8a5bab5f1b3e18d8edb8cb5d78a31e3b6b4646c5
+    rev: 1.0.0
     hooks:
     -   id: linting
 ```
@@ -120,6 +120,11 @@ pip install pre-commit
 pre-commit install
 ```
 Then the code is linted before every commit.
+
+To test the hooks without commits, you can run
+```
+pre-commit run -a
+```
 
 As configuration is reused from github workflows, a linting workflow using above reusable
 workflow must exist at `.github/workflows/linting.yml`. It is configurable:
