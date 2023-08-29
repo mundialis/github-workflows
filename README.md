@@ -106,10 +106,11 @@ You can use it by adding a `pre-commit-config.yml` file containing e.g.:
 ```
 repos:
 -   repo: https://github.com/mundialis/github-workflows
-    rev: 1.0.0
+    rev: 1.0.1
     hooks:
     -   id: linting
 ```
+**Note**: Might need to adapt/update the release tag of repo within `pre-commit-config.yml`
 
 An extended example can be found at [.pre-commit-example-config.yml](.pre-commit-example-config.yml)
 
