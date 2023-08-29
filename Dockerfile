@@ -4,7 +4,7 @@ FROM python:3-slim
 # Unfortunately there is no config option yet to specify the name or path
 # of this image, so it must be on root level simply named Dockerfile...
 
-RUN apt-get update && apt-get install jq -y
+RUN apt-get update && apt-get install jq wget -y
 RUN pip install --upgrade pip yq virtualenv
 
 # Copy linting workflow to identify linter versions if needed
