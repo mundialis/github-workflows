@@ -101,6 +101,7 @@ echo "black: `black --version`"
 
 cd $CODE_REPO_PATH
 
+FAILINGSTEP=""
 RETURNCODE=0
 if [ $RUN_FLAKE8 != "FALSE" ]
 then
@@ -110,6 +111,7 @@ then
     if [ $? -ne 0 ]
     then
         RETURNCODE=1
+        FAILINGSTEP="FLAKE8"
     fi
 else
     echo
@@ -132,6 +134,7 @@ then
     if [ $? -ne 0 ]
     then
         RETURNCODE=1
+        FAILINGSTEP="$FAILINGSTEP PYLINT"
     fi
 
     echo
@@ -158,10 +161,15 @@ then
     if [ $? -ne 0 ]
     then
         RETURNCODE=1
+        FAILINGSTEP="$FAILINGSTEP BLACK"
     fi
 else
     echo
     echo "BLACK configured to be skipped"
 fi
 
+if [ $RETURNCODE -ne 0 ]
+then
+    echo "Failing steps: ${FAILINGSTEP}"
+fi
 exit $RETURNCODE
