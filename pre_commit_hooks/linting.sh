@@ -107,7 +107,7 @@ then
     echo
     echo "FLAKE8:"
     flake8 --config=.flake8 --count --statistics --show-source .
-    if [ $? -ne 0]
+    if [ $? -ne 0 ]
     then
         RETURNCODE=1
     fi
@@ -129,7 +129,7 @@ then
         wget https://raw.githubusercontent.com/mundialis/github-workflows/main/linting-config-examples/.pylintrc
     fi
     pylint .
-    if [ $? -ne 0]
+    if [ $? -ne 0 ]
     then
         RETURNCODE=1
     fi
@@ -155,7 +155,7 @@ then
     echo
     echo "BLACK:"
     black --check --diff --line-length 79 .
-    if [ $? -ne 0]
+    if [ $? -ne 0 ]
     then
         RETURNCODE=1
     fi
@@ -164,4 +164,4 @@ else
     echo "BLACK configured to be skipped"
 fi
 
-return $RETURNCODE
+exit $RETURNCODE
