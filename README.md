@@ -106,7 +106,7 @@ You can use it by adding a `pre-commit-config.yml` file containing e.g.:
 ```
 repos:
 -   repo: https://github.com/mundialis/github-workflows
-    rev: 1.0.2
+    rev: 1.0.3
     hooks:
     -   id: linting
 ```
