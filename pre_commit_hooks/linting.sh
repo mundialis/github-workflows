@@ -90,7 +90,7 @@ then
     NEW_MDFORMAT_VERSION=$(yq '.jobs.lint.with."mdformat-version"' $CODE_LINTING_WORKFLOW)
     if [ "$(echo $NEW_MDFORMAT_VERSION | tr '"' 'x')" = "xx" ]
     then
-        RUN_PYLINT=FALSE
+        RUN_MDFORMAT=FALSE
         echo "- mdformat configured to be skipped (empty string)"
     elif [ $DEFAULT_MDFORMAT_VERSION != $NEW_MDFORMAT_VERSION ]
     then
