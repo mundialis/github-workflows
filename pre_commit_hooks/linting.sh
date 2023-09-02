@@ -192,7 +192,7 @@ if [ $RUN_MDFORMAT != "FALSE" ]
 then
     echo
     echo "MDFORMAT:"
-    black --check .
+    mdformat --check .
     if [ $? -ne 0 ]
     then
         RETURNCODE=1
