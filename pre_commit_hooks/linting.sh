@@ -154,7 +154,7 @@ then
     if [ $? -ne 0 ]
     then
         RETURNCODE=1
-        FAILINGSTEP="$FAILINGSTEP PYLINT"
+        FAILINGSTEP="$FAILINGSTEP PYLINT (run 'pylint .')"
     fi
 
     echo
@@ -170,7 +170,7 @@ then
     pylint --rc-file=.pylintrc_allowed_to_fail .
 else
     echo
-    echo "PYLINT configured to be skipped"
+    echo "PYLINT configured to be skipped (run 'pylint --rc-file=.pylintrc_allowed_to_fail .')"
 fi
 
 if [ $RUN_BLACK != "FALSE" ]
@@ -181,7 +181,7 @@ then
     if [ $? -ne 0 ]
     then
         RETURNCODE=1
-        FAILINGSTEP="$FAILINGSTEP BLACK"
+        FAILINGSTEP="$FAILINGSTEP BLACK (run 'black --check --diff --line-length 79 .')"
     fi
 else
     echo
@@ -196,7 +196,7 @@ then
     if [ $? -ne 0 ]
     then
         RETURNCODE=1
-        FAILINGSTEP="$FAILINGSTEP MDFORMAT (run mdformat .)"
+        FAILINGSTEP="$FAILINGSTEP MDFORMAT (run 'mdformat --check .')"
     fi
 else
     echo
