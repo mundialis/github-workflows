@@ -156,6 +156,19 @@ So if .pylintrc and .pylintrc_allowed_to_fail already exist, do nothing, else ad
 ```
 Once in a while you can remove them manually to be in sync with the github-workflows default configs.
 
+It is also recommended to add a `renovate.json` config with pre-commit enabled to your repository:
+```
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base"
+  ],
+  "pre-commit": {
+    "enabled": true
+  }
+}
+```
+
 ### Development
 To develop the pre-commit hook locally, cd into a code repository where you want to use it and run
 ```
