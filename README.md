@@ -145,6 +145,17 @@ while having access to all files in this repository - if needed later, they need
 The linting.sh is then executed with the code repository mounted, so all files of that
 repository are accessible only during runtime of the docker container.
 
+When the linting config files do not exist in your repository because no general adjustments
+are necessary, the default configs are downloaded. To avoid duplicate downloads and to be 
+able to lint locally, they are kept and it makes sense to add them to the `.gitignore` file.
+So if .pylintrc and .pylintrc_allowed_to_fail already exist, do nothing, else add them to 
+`.gitignore` like so:
+```
+.pylintrc
+.pylintrc_allowed_to_fail
+```
+Once in a while you can remove them manually to be in sync with the github-workflows default configs.
+
 ### Development
 To develop the pre-commit hook locally, cd into a code repository where you want to use it and run
 ```
