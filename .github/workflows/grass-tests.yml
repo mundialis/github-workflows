@@ -24,7 +24,7 @@ jobs:
           && wget https://raw.githubusercontent.com/mundialis/github-workflows/main/test-docker/test.sh )
     - name: Tests of GRASS GIS addon
       id: docker_build
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v5
       with:
         push: false
         tags: addon-tests:alpine
