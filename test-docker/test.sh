@@ -17,6 +17,12 @@ FILENAME=$(basename "$(find . -name *.html -maxdepth 1)")
 ADDON="${FILENAME%%.html}"
 
 CURRENTDIR=$(pwd)
+
+if [ -f requirements.txt ]
+then
+  echo "REQ"
+  pip3 install -r requirements.txt
+fi
 g.extension extension=${ADDON} url=. && \
 for file in $(find . -type f -name test*.py) ; \
 do  \
