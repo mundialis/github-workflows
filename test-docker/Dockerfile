@@ -5,7 +5,7 @@ ARG NC_TEST_DATA=""
 WORKDIR /src
 COPY . /src
 COPY test-docker/test.sh /src
-RUN apk add gcc make
+RUN apk add gcc make python3-dev musl-dev linux-headers
 RUN test -e requirements.txt && pip3 install -r requirements.txt || echo "No requirements.txt"
 
 # run tests if NC_TEST_DATA is set to NC with downloaded NC test loaction otherwise in empty location
