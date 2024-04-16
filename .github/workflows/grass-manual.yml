@@ -12,7 +12,7 @@ jobs:
       - name: Creation of GRASS GIS addon manual
         run: |
           ADDON_NAME=$(echo ${GITHUB_REPOSITORY} | cut -d "/" -f 2)
-          wget -O manual_Dockerfile https://raw.githubusercontent.com/mundialis/github-workflows/main/manual-docker/Dockerfile
+          wget -O manual_Dockerfile https://raw.githubusercontent.com/mundialis/github-workflows/main/grass-gis-manual-docker/Dockerfile
           docker build -f manual_Dockerfile --build-arg ADDON_NAME=$ADDON_NAME --build-arg GITHUB_REPOSITORY=$GITHUB_REPOSITORY -t grass-addon-manual .
           ID=$(docker create grass-addon-manual)
           echo $ID
@@ -37,9 +37,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Reset URL
-        run: |
-          echo  ${{ steps.deployment.outputs.page_url }}
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
