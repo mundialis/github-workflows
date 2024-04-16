@@ -47,12 +47,24 @@ on:
 
 jobs:
   tests:
-    uses: mundialis/github-workflows/.github/workflows/grass-tests.yml@grass-tests
+    uses: mundialis/github-workflows/.github/workflows/grass-tests.yml@main
     # set NC_TEST_DATA to 'NC' for using NC GRASS GIS sample location
     # with:
     #   NC_TEST_DATA: 'NC'
 ```
 
+## GRASS GIS addon manual
+
+The GRASS GIS addon manual workflow can be added to a repo with a GRASS GIS addon inside to create the addon manual and pubish the manual to Github pages.
+
+You can use it e.g. like this:
+```
+on: [push]
+
+jobs:
+  grass-manual:
+    uses: mundialis/github-workflows/.github/workflows/grass-manual.yml@main
+```
 
 ## Python Publishing
 
@@ -146,9 +158,9 @@ The linting.sh is then executed with the code repository mounted, so all files o
 repository are accessible only during runtime of the docker container.
 
 When the linting config files do not exist in your repository because no general adjustments
-are necessary, the default configs are downloaded. To avoid duplicate downloads and to be 
+are necessary, the default configs are downloaded. To avoid duplicate downloads and to be
 able to lint locally, they are kept and it makes sense to add them to the `.gitignore` file.
-So if .pylintrc and .pylintrc_allowed_to_fail already exist, do nothing, else add them to 
+So if .pylintrc and .pylintrc_allowed_to_fail already exist, do nothing, else add them to
 `.gitignore` like so:
 ```
 .pylintrc
