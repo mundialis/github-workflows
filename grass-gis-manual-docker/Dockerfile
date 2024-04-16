@@ -6,7 +6,7 @@ ARG GITHUB_REPOSITORY
 WORKDIR /src
 COPY . /src
 
-RUN apk add gcc make python3-dev
+RUN apk add gcc make python3-dev musl-dev linux-headers
 
 # create environment to install requirements
 RUN python -m venv addon-env
