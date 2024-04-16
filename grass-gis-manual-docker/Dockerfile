@@ -23,4 +23,4 @@ RUN for HTML in $(ls -d /src/build/docs/html/*.html) ; do sed -i "s+(<a href=\"\
 RUN for HTML in $(ls -d /src/build/docs/html/*.html) ; do sed -i "s+<a href=\"\">+<a href=\"https://github.com/${GITHUB_REPOSITORY}\">+g" ${HTML} ; done
 
 # Reset URLs for multi-addons in index html
-RUN for DIR in $(ls -d /src/*/) ; do SUB_ADDON=$(basename $DIR) ; sed -i "s+https://grass.osgeo.org/grass-stable/manuals/${SUB_ADDON}.html\">${SUB_ADDON}+https://github.com/${GITHUB_REPOSITORY}/${SUB_ADDON}.html\">${SUB_ADDON}+g" build/docs/html/index.html ; done
+RUN for DIR in $(ls -d /src/*/) ; do SUB_ADDON=$(basename $DIR) ; sed -i "s+https://grass.osgeo.org/grass-stable/manuals/${SUB_ADDON}.html\">${SUB_ADDON}+https://mundialis.github.io/${GITHUB_REPOSITORY}/${SUB_ADDON}.html\">${SUB_ADDON}+g" build/docs/html/index.html ; done
