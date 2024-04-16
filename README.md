@@ -61,7 +61,9 @@ to GitHub Pages.
 
 You can use it e.g. like this:
 ```
-on: [push]
+on:
+  push:
+    branches: [ main ]
 
 jobs:
   grass-manual:
