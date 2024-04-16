@@ -55,16 +55,24 @@ jobs:
 
 ## GRASS GIS addon manual
 
-The GRASS GIS addon manual workflow can be added to a repo with a GRASS GIS addon inside to create the addon manual and pubish the manual to Github pages.
+The GRASS GIS addon (and multi addon) manual workflow can be added to a repo
+with a GRASS GIS addon inside to create the addon manual and pubish the manual
+to GitHub Pages.
 
 You can use it e.g. like this:
 ```
-on: [push]
+on:
+  push:
+    branches: [ main ]
 
 jobs:
   grass-manual:
     uses: mundialis/github-workflows/.github/workflows/grass-manual.yml@main
 ```
+
+Attention: you have to activate GitHub Pages for the repository (see
+[here](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#publishing-from-a-branch))
+
 
 ## Python Publishing
 
