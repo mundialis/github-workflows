@@ -39,7 +39,7 @@ max-module-lines=800 # Default: 1000
 ignore-long-lines=.*COPYRIGHT:.* |# . description:.*|\s*(# )?.*http.:\/\/\S+?|# %%*
 
 [MESSAGES CONTROL]
-# E0606 (possibly-used-before-assignment): to set options and flags at the button of the file
+# E0606 (possibly-used-before-assignment): to set options and flags at the bottom of the file without pre-initialization
 disable=E0606
 
 [VARIABLES]
