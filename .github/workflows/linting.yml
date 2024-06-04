@@ -6,15 +6,15 @@ on:
       black-version:
         required: false
         type: string
-        default: '23.3.0'
+        default: '24.4.2'
       flake8-version:
         required: false
         type: string
-        default: '6.0.0'
+        default: '7.0.0'
       pylint-version:
         required: false
         type: string
-        default: '2.17.4'
+        default: '3.2.2'
       mdformat-version:
         required: false
         type: string
