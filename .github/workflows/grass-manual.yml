@@ -16,7 +16,7 @@ jobs:
           docker build -f manual_Dockerfile --build-arg ADDON_NAME=$ADDON_NAME --build-arg GITHUB_REPOSITORY=$GITHUB_REPOSITORY -t grass-addon-manual .
           ID=$(docker create grass-addon-manual)
           echo $ID
-          docker cp $ID:/src/build/docs/html/ public
+          docker cp $ID:/src/build/docs/html public
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
