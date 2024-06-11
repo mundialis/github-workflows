@@ -31,7 +31,7 @@ do  \
     echo ${file}
     BASENAME=$(basename "${file}") ; \
     DIR=$(dirname "${file}") ; \
-    cd ${CURRENTDIR}/${DIR} && python3 -m unittest ${BASENAME}
+    cd ${CURRENTDIR}/${DIR} && python -m unittest ${BASENAME}
     for res_file in $(test_keyvalue_result_*.txt) ; do
       cat ${res_file}
     done
