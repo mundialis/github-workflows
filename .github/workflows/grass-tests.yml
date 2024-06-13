@@ -20,8 +20,8 @@ jobs:
     - name: add Dockerfile and test skript
       run: |
         ( mkdir -p test-docker && cd test-docker && \
-          wget https://raw.githubusercontent.com/mundialis/github-workflows/main/grass-gis-test-docker/Dockerfile \
-          && wget https://raw.githubusercontent.com/mundialis/github-workflows/main/grass-gis-test-docker/test.sh )
+          wget https://raw.githubusercontent.com/mundialis/github-workflows/grass_test_improvements/grass-gis-test-docker/Dockerfile \
+          && wget https://raw.githubusercontent.com/mundialis/github-workflows/grass_test_improvements/grass-gis-test-docker/test.sh )
     - name: Tests of GRASS GIS addon
       id: docker_build
       uses: docker/build-push-action@v5
