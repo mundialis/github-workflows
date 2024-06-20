@@ -102,11 +102,6 @@ jobs:
   super-linter:
     name: GitHub Super Linter
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: read
-      # To report GitHub Actions status checks
-      statuses: write
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
@@ -116,7 +111,6 @@ jobs:
       - name: Lint code base
         uses: super-linter/super-linter/slim@88ea3923a7e1f89dd485d079f6eb5f5e8f937589 # v6.6.0
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
           # (see https://github.com/github/super-linter#environment-variables)
           VALIDATE_BASH: true
