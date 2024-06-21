@@ -1,4 +1,4 @@
-name: Python Flake8 and pylint code quality check
+name: Linting and code quality check
 
 on:
   workflow_call:
@@ -15,10 +15,6 @@ on:
         required: false
         type: string
         default: '3.2.2'
-      mdformat-version:
-        required: false
-        type: string
-        default: '0.7.17'
 
 jobs:
   flake8:
@@ -86,7 +82,7 @@ jobs:
       run: |
         black --check --diff --line-length 79 .
   super-linter:
-    name: GitHub Super Linter
+    name: super-linter
     runs-on: ubuntu-latest
     permissions:
       contents: read
