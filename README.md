@@ -10,7 +10,7 @@ You can use it e.g. like this:
 ```
 name: Python Flake8, black and pylint code quality check
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   lint:
