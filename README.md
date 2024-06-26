@@ -75,6 +75,8 @@ jobs:
 Attention: you have to activate GitHub Pages for the repository (see
 [here](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#publishing-from-a-branch))
 
+After the GitHub Page is created you can go to the repo and click on the Settings next to "About" and check there "Use your GitHub Pages website". The GitHub Pages will appear under the description of the repo.
+
 ## Python Publishing
 
 The python publish workflow creates a wheel and uploads it to release assets.
