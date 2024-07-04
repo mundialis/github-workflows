@@ -15,6 +15,62 @@ on:
         required: false
         type: string
         default: '3.2.2'
+      VALIDATE_BASH:
+        required: false
+        type: boolean
+        default: true
+      VALIDATE_BASH_EXEC:
+        required: false
+        type: boolean
+        default: true
+      VALIDATE_CSS:
+        required: false
+        type: boolean
+        default: true
+      VALIDATE_DOCKER:
+        required: false
+        type: boolean
+        default: true
+      VALIDATE_GITHUB_ACTIONS:
+        required: false
+        type: boolean
+        default: true
+      VALIDATE_HTML:
+        required: false
+        type: boolean
+        default: true
+      VALIDATE_JAVASCRIPT_ES:
+        required: false
+        type: boolean
+        default: true
+      VALIDATE_JAVASCRIPT_STANDARD:
+        required: false
+        type: boolean
+        default: true
+      VALIDATE_JSON:
+        required: false
+        type: boolean
+        default: true
+      VALIDATE_MARKDOWN:
+        required: false
+        type: boolean
+        default: true
+      VALIDATE_POWERSHELL:
+        required: false
+        type: boolean
+        default: true
+      VALIDATE_RENOVATE:
+        required: false
+        type: boolean
+        default: true
+      VALIDATE_XML:
+        required: false
+        type: boolean
+        default: true
+      VALIDATE_YAML:
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   flake8:
@@ -100,18 +156,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
-          # (see https://github.com/github/super-linter#environment-variables)
-          VALIDATE_BASH: true
-          VALIDATE_BASH_EXEC: true
-          VALIDATE_CSS: true
-          VALIDATE_DOCKER: true
-          VALIDATE_GITHUB_ACTIONS: true
-          VALIDATE_HTML: true
-          VALIDATE_JAVASCRIPT_ES: true
-          VALIDATE_JAVASCRIPT_STANDARD: true
-          VALIDATE_JSON: true
-          VALIDATE_MARKDOWN: true
-          VALIDATE_POWERSHELL: true
-          VALIDATE_RENOVATE: true
-          VALIDATE_XML: true
-          VALIDATE_YAML: true
+          # (https://github.com/super-linter/super-linter/blob/main/README.md)
+          BASH_SEVERITY: warning
+          VALIDATE_BASH: ${{ inputs.VALIDATE_BASH }}
+          VALIDATE_BASH_EXEC: ${{ inputs.VALIDATE_BASH_EXEC }}
+          VALIDATE_CSS: ${{ inputs.VALIDATE_CSS }}
+          VALIDATE_DOCKER: ${{ inputs.VALIDATE_DOCKER }}
+          VALIDATE_GITHUB_ACTIONS: ${{ inputs.VALIDATE_GITHUB_ACTIONS }}
+          VALIDATE_HTML: ${{ inputs.VALIDATE_HTML }}
+          VALIDATE_JAVASCRIPT_ES: ${{ inputs.VALIDATE_JAVASCRIPT_ES }}
+          VALIDATE_JAVASCRIPT_STANDARD: ${{ inputs.VALIDATE_JAVASCRIPT_STANDARD }}
+          VALIDATE_JSON: ${{ inputs.VALIDATE_JSON }}
+          VALIDATE_MARKDOWN: ${{ inputs.VALIDATE_MARKDOWN }}
+          VALIDATE_POWERSHELL: ${{ inputs.VALIDATE_POWERSHELL }}
+          VALIDATE_RENOVATE: ${{ inputs.VALIDATE_RENOVATE }}
+          VALIDATE_XML: ${{ inputs.VALIDATE_XML }}
+          VALIDATE_YAML: ${{ inputs.VALIDATE_YAML }}
