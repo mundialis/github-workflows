@@ -27,7 +27,7 @@ on:
         required: false
         type: boolean
         default: true
-      VALIDATE_DOCKER:
+      VALIDATE_DOCKERFILE_HADOLINT:
         required: false
         type: boolean
         default: true
@@ -161,7 +161,7 @@ jobs:
           VALIDATE_BASH: ${{ inputs.VALIDATE_BASH }}
           VALIDATE_BASH_EXEC: ${{ inputs.VALIDATE_BASH_EXEC }}
           VALIDATE_CSS: ${{ inputs.VALIDATE_CSS }}
-          VALIDATE_DOCKER: ${{ inputs.VALIDATE_DOCKER }}
+          VALIDATE_DOCKERFILE_HADOLINT: ${{ inputs.VALIDATE_DOCKERFILE_HADOLINT }}
           VALIDATE_GITHUB_ACTIONS: ${{ inputs.VALIDATE_GITHUB_ACTIONS }}
           VALIDATE_HTML: ${{ inputs.VALIDATE_HTML }}
           VALIDATE_JAVASCRIPT_ES: ${{ inputs.VALIDATE_JAVASCRIPT_ES }}
