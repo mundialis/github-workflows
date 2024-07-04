@@ -158,17 +158,17 @@ jobs:
           DEFAULT_BRANCH: main
           # (https://github.com/super-linter/super-linter/blob/main/README.md)
           BASH_SEVERITY: warning
-          VALIDATE_BASH: ${{ inputs.VALIDATE_BASH }}
-          VALIDATE_BASH_EXEC: ${{ inputs.VALIDATE_BASH_EXEC }}
-          VALIDATE_CSS: ${{ inputs.VALIDATE_CSS }}
+          VALIDATE_BASH: "${{ inputs.VALIDATE_BASH == true && true || '' }}"
+          VALIDATE_BASH_EXEC: "${{ inputs.VALIDATE_BASH_EXEC == true && true || '' }}"
+          VALIDATE_CSS: "${{ inputs.VALIDATE_CSS == true && true || '' }}"
           VALIDATE_DOCKERFILE_HADOLINT: "${{ inputs.VALIDATE_DOCKERFILE_HADOLINT == true && true || '' }}"
-          VALIDATE_GITHUB_ACTIONS: ${{ inputs.VALIDATE_GITHUB_ACTIONS }}
-          VALIDATE_HTML: ${{ inputs.VALIDATE_HTML }}
-          VALIDATE_JAVASCRIPT_ES: ${{ inputs.VALIDATE_JAVASCRIPT_ES }}
-          VALIDATE_JAVASCRIPT_STANDARD: ${{ inputs.VALIDATE_JAVASCRIPT_STANDARD }}
-          VALIDATE_JSON: ${{ inputs.VALIDATE_JSON }}
-          VALIDATE_MARKDOWN: ${{ inputs.VALIDATE_MARKDOWN }}
-          VALIDATE_POWERSHELL: ${{ inputs.VALIDATE_POWERSHELL }}
-          VALIDATE_RENOVATE: ${{ inputs.VALIDATE_RENOVATE }}
-          VALIDATE_XML: ${{ inputs.VALIDATE_XML }}
-          VALIDATE_YAML: ${{ inputs.VALIDATE_YAML }}
+          VALIDATE_GITHUB_ACTIONS: "${{ inputs.VALIDATE_GITHUB_ACTIONS == true && true || '' }}"
+          VALIDATE_HTML: "${{ inputs.VALIDATE_HTML == true && true || '' }}"
+          VALIDATE_JAVASCRIPT_ES: "${{ inputs.VALIDATE_JAVASCRIPT_ES == true && true || '' }}"
+          VALIDATE_JAVASCRIPT_STANDARD: "${{ inputs.VALIDATE_JAVASCRIPT_STANDARD == true && true || '' }}"
+          VALIDATE_JSON: "${{ inputs.VALIDATE_JSON == true && true || '' }}"
+          VALIDATE_MARKDOWN: "${{ inputs.VALIDATE_MARKDOWN == true && true || '' }}"
+          VALIDATE_POWERSHELL: "${{ inputs.VALIDATE_POWERSHELL == true && true || '' }}"
+          VALIDATE_RENOVATE: "${{ inputs.VALIDATE_RENOVATE == true && true || '' }}"
+          VALIDATE_XML: "${{ inputs.VALIDATE_XML == true && true || '' }}"
+          VALIDATE_YAML: "${{ inputs.VALIDATE_YAML == true && true || '' }}"
