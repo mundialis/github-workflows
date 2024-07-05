@@ -15,6 +15,10 @@ on:
         required: false
         type: string
         default: '3.2.2'
+      BASH_SEVERITY:
+        required: false
+        type: string
+        default: 'style'
       VALIDATE_BASH:
         required: false
         type: boolean
@@ -157,7 +161,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
           # (https://github.com/super-linter/super-linter/blob/main/README.md)
-          BASH_SEVERITY: warning
+          BASH_SEVERITY: ${{ inputs.BASH_SEVERITY }}
           VALIDATE_BASH: "${{ inputs.VALIDATE_BASH == true && true || '' }}"
           VALIDATE_BASH_EXEC: "${{ inputs.VALIDATE_BASH_EXEC == true && true || '' }}"
           VALIDATE_CSS: "${{ inputs.VALIDATE_CSS == true && true || '' }}"
