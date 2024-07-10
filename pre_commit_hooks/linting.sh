@@ -24,7 +24,6 @@ fi
 RUN_BLACK=TRUE
 RUN_FLAKE8=TRUE
 RUN_PYLINT=TRUE
-RUN_MDFORMAT=TRUE
 
 ####################################
 # Overwrite linter versions if set #
@@ -84,24 +83,6 @@ else
     echo "- pylint version not overwritten in code workflow"
 fi
 
-if [ $(yq '.jobs.lint.with | has("mdformat-version")' $CODE_LINTING_WORKFLOW) == true ]
-then
-    DEFAULT_MDFORMAT_VERSION=$(cat /requirements.txt | grep mdformat== | cut -d "=" -f 3)
-    NEW_MDFORMAT_VERSION=$(yq '.jobs.lint.with."mdformat-version"' $CODE_LINTING_WORKFLOW)
-    if [ "$(echo $NEW_MDFORMAT_VERSION | tr '"' 'x')" = "xx" ]
-    then
-        RUN_MDFORMAT=FALSE
-        echo "- mdformat configured to be skipped (empty string)"
-    elif [ $DEFAULT_MDFORMAT_VERSION != $NEW_MDFORMAT_VERSION ]
-    then
-        # sed would fail with Permission denied
-        # sed -i "s+$DEFAULT_MDFORMAT_VERSION+$NEW_MDFORMAT_VERSION+g" /requirements.txt
-        echo "- Warning: overwritten mdformat version will not be installed!"
-    fi
-else
-    echo "- mdformat version not overwritten in code workflow"
-fi
-
 echo
 
 ###################
@@ -113,7 +94,6 @@ echo
 echo "flake8: `flake8 --version`"
 echo "pylint: `pylint --version`"
 echo "black: `black --version`"
-echo "mdformat: `mdformat --version`"
 
 ########
 # lint #
@@ -186,21 +166,6 @@ then
 else
     echo
     echo "BLACK configured to be skipped"
-fi
-
-if [ $RUN_MDFORMAT != "FALSE" ]
-then
-    echo
-    echo "MDFORMAT:"
-    mdformat --check .
-    if [ $? -ne 0 ]
-    then
-        RETURNCODE=1
-        FAILINGSTEP="$FAILINGSTEP MDFORMAT (run 'mdformat --check .')"
-    fi
-else
-    echo
-    echo "MDFORMAT configured to be skipped"
 fi
 
 if [ $RETURNCODE -ne 0 ]

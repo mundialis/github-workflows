@@ -8,22 +8,26 @@ code quality.
 You can use it e.g. like this:
 
 ```
-name: Python Flake8, black and pylint code quality check
+name: Linting and code quality check
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   lint:
     uses: mundialis/github-workflows/.github/workflows/linting.yml@main
     with:
       pylint-version: '2.17.4'
+      VALIDATE_JAVASCRIPT_STANDARD: false
+      BASH_SEVERITY: 'warning'
+
 ```
 
-Examples how `flake8` and `pylint` can be configured are in the
-[linting-config-examples](https://github.com/mundialis/github-workflows/blob/main/linting-config-examples)
+Examples how `flake8`, `pylint` `markdownlint` and `shellcheck` can be configured are in the
+[linting-config-examples](linting-config-examples)
 folder. The `pylint` configuration files do not need to be created if they
 are not to be customized, scince they will be copied by the workflow if they
-do not exists.
+do not exists. See [linting-config-examples](linting-config-examples/README.md) for more
+details on how to configure the individual linters.
 
 If one of the versions is set to an empty string the code quality check will be
 skipped.
