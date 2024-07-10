@@ -17,7 +17,7 @@ jobs:
     uses: mundialis/github-workflows/.github/workflows/linting.yml@main
     with:
       pylint-version: '2.17.4'
-      VALIDATE_DOCKERFILE_HADOLINT: false
+      VALIDATE_JAVASCRIPT_STANDARD: false
       BASH_SEVERITY: 'warning'
 
 ```
