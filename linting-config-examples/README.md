@@ -98,6 +98,6 @@ docker run \
   -e RUN_LOCAL=true \
   -e DEFAULT_BRANCH=main \
   -e VALIDATE_BASH=true \
-  -v /home/ctawalika/repos/actinia/actinia-core/:/tmp/lint \
+  -v ${HOME}/repos/actinia/actinia-core/:/tmp/lint \
   ghcr.io/super-linter/super-linter:latest
 ```
