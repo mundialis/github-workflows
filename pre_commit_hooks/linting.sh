@@ -24,6 +24,7 @@ fi
 RUN_BLACK=TRUE
 RUN_FLAKE8=TRUE
 RUN_PYLINT=TRUE
+RUN_RUFF=TRUE
 
 ####################################
 # Overwrite linter versions if set #
@@ -83,6 +84,24 @@ else
     echo "- pylint version not overwritten in code workflow"
 fi
 
+if [ $(yq '.jobs.lint.with | has("ruff-version")' $CODE_LINTING_WORKFLOW) == true ]
+then
+    DEFAULT_RUFF_VERSION=$(cat /requirements.txt | grep ruff== | cut -d "=" -f 3)
+    NEW_RUFF_VERSION=$(yq '.jobs.lint.with."ruff-version"' $CODE_LINTING_WORKFLOW)
+    if [ "$(echo $NEW_RUFF_VERSION | tr '"' 'x')" = "xx" ]
+    then
+        RUN_RUFF=FALSE
+        echo "- ruff configured to be skipped (empty string)"
+    elif [ $DEFAULT_RUFF_VERSION != $NEW_RUFF_VERSION ]
+    then
+        # sed would fail with Permission denied
+        # sed -i "s+$DEFAULT_RUFF_VERSION+$NEW_RUFF_VERSION+g" /requirements.txt
+        echo "- Warning: overwritten ruff version will not be installed!"
+    fi
+else
+    echo "- ruff version not overwritten in code workflow"
+fi
+
 echo
 
 ###################
@@ -94,6 +113,7 @@ echo
 echo "flake8: `flake8 --version`"
 echo "pylint: `pylint --version`"
 echo "black: `black --version`"
+echo "black: `ruff --version`"
 
 ########
 # lint #
@@ -166,6 +186,29 @@ then
 else
     echo
     echo "BLACK configured to be skipped"
+fi
+
+if [ $RUN_RUFF != "FALSE" ]
+then
+    echo
+    echo "RUFF:"
+    if test -f "pyproject.toml"
+    then
+        echo "pyproject.toml exists"
+    else
+        # Same behaviour as in workflow
+        echo "pyproject.toml does not exists. Will be downloaded."
+        wget https://raw.githubusercontent.com/mundialis/github-workflows/main/linting-config-examples/pyproject.toml
+    fi
+    ruff check --config pyproject.toml .
+    if [ $? -ne 0 ]
+    then
+        RETURNCODE=1
+        FAILINGSTEP="$FAILINGSTEP RUFF (run 'ruff check --config pyproject.toml .')"
+    fi
+else
+    echo
+    echo "RUFF configured to be skipped"
 fi
 
 if [ $RETURNCODE -ne 0 ]

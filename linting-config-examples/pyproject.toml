@@ -1,0 +1,45 @@
+[tool.black]
+required-version >= '24'
+line-length = 79
+target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
+
+# [tool.ruff.format]
+# See https://docs.astral.sh/ruff/formatter/
+# quote-style = "double"
+# indent-style= "tab"
+
+[tool.ruff]
+required-version = ">=0.7.0"
+
+# In addition to the standard set of exclusions, omit the following files or folders.
+extend-exclude = [
+    ".git",
+    "__pycache__",
+    ".env",
+    ".venv",
+    "env",
+    "venv",
+    "ENV",
+    "env.bak",
+    "venv.bak",
+    "ctypes",
+    "pydispatch",
+]
+
+# [tool.ruff.lint]
+# See https://docs.astral.sh/ruff/rules/
+# select = [
+#     "A",        # flake8-builtins (A)
+#     "COM",      # flake8-commas
+#     "PL",       # Pylint
+# ]
+
+# ignore = [
+    # See https://docs.astral.sh/ruff/rules/
+#    "E402",     # module-import-not-at-top-of-file
+#    "E501",     # line-too-long
+# ]
+
+# [tool.ruff.lint.per-file-ignores]
+# See https://docs.astral.sh/ruff/settings/#lint_per-file-ignores
+# "lib_dop/r_dop_import_lib.py" = ["ERA001", "PLR2004"]
