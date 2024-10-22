@@ -160,13 +160,13 @@ jobs:
         pip3 install ruff==${{ inputs.ruff-version }}
         ruff --version
     - name: Configure ruff
-      if: ${{ hashFiles('pyproject.toml') == '' }}
+      if: ${{ hashFiles('ruff.toml') == '' }}
       run: |
-        echo "pyproject.toml does not exists. Will be downloaded."
-        wget https://raw.githubusercontent.com/mundialis/github-workflows/main/linting-config-examples/pyproject.toml
+        echo "ruff.toml does not exists. Will be downloaded."
+        wget https://raw.githubusercontent.com/mundialis/github-workflows/main/linting-config-examples/ruff.toml
     - name: Lint with ruff
       run: |
-        ruff check --config pyproject.toml .
+        ruff check --config ruff.toml .
   super-linter:
     name: super-linter
     runs-on: ubuntu-latest

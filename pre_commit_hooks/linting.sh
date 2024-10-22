@@ -113,7 +113,7 @@ echo
 echo "flake8: `flake8 --version`"
 echo "pylint: `pylint --version`"
 echo "black: `black --version`"
-echo "black: `ruff --version`"
+echo "ruff: `ruff --version`"
 
 ########
 # lint #
@@ -192,19 +192,19 @@ if [ $RUN_RUFF != "FALSE" ]
 then
     echo
     echo "RUFF:"
-    if test -f "pyproject.toml"
+    if test -f "ruff.toml"
     then
-        echo "pyproject.toml exists"
+        echo "ruff.toml exists"
     else
         # Same behaviour as in workflow
-        echo "pyproject.toml does not exists. Will be downloaded."
-        wget https://raw.githubusercontent.com/mundialis/github-workflows/main/linting-config-examples/pyproject.toml
+        echo "ruff.toml does not exists. Will be downloaded."
+        wget https://raw.githubusercontent.com/mundialis/github-workflows/main/linting-config-examples/ruff.toml
     fi
-    ruff check --config pyproject.toml .
+    ruff check --config ruff.toml .
     if [ $? -ne 0 ]
     then
         RETURNCODE=1
-        FAILINGSTEP="$FAILINGSTEP RUFF (run 'ruff check --config pyproject.toml .')"
+        FAILINGSTEP="$FAILINGSTEP RUFF (run 'ruff check --config ruff.toml .')"
     fi
 else
     echo
