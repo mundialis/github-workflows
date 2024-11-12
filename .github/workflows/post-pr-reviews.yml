@@ -3,7 +3,6 @@
 name: Post PR code suggestions
 
 on:
-  workflow_call:
   workflow_run:
     workflows: "Linting and code quality check"
     types:
