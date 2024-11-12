@@ -1,7 +1,9 @@
-# ---
+# from https://github.com/OSGeo/grass/blob/main/.github/workflows/post-pr-reviews.yml and slightly modified
+---
 name: Post PR code suggestions
 
 on:
+  workflow_call:
   workflow_run:
     workflows: "Linting and code quality check"
     types:
