@@ -22,6 +22,10 @@ same way and place them in your directory root to adjust.
 `pylint .`
 `pylint --rc-file=.pylintrc_allowed_to_fail .`
 
+## ruff
+ruff contains rules inspired by black, flake8, pylint and more and is extremely fast in linting and formatting Python code. Simply add a ruff.toml config file to the root of your repository.
+See example here or visit [official documentation](https://docs.astral.sh/ruff/). `ruff check --config ruff.toml .`
+
 ## superlinter
 Superlinter is a wrapper for many different linters. Each has a different way to be configured.
 Example config files exist for [markdownlint](https://github.com/DavidAnson/markdownlint)
