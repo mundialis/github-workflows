@@ -1,1 +1,5 @@
-// empty C file for codeql workflow
+#include <stdio.h>
+int main() {
+   printf("Hello, World!");
+   exit(EXIT_SUCCESS);
+}
