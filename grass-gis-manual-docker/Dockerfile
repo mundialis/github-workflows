@@ -1,4 +1,4 @@
-FROM osgeo/grass-gis:main-alpine
+FROM osgeo/grass-gis:releasebranch_8_4-alpine
 
 ARG ADDON_NAME
 ARG GITHUB_REPOSITORY
