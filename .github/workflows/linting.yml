@@ -147,7 +147,7 @@ jobs:
         black --check --diff --line-length 79 .
     - name: Create and upload code suggestions to apply for black
       id: diff-black
-      uses: mundialis/github-workflows/.github/actions/create-upload-suggestions@add_post_pr_reviews
+      uses: OSGeo/grass/.github/actions/create-upload-suggestions@main
       with:
         tool-name: black
         # extra-upload-changes: .clang-format
@@ -180,7 +180,7 @@ jobs:
     - name: Create and upload code suggestions to apply for ruff
       id: diff-ruff
       if: ${{ !cancelled() }}
-      uses: mundialis/github-workflows/.github/actions/create-upload-suggestions@add_post_pr_reviews
+      uses: OSGeo/grass/.github/actions/create-upload-suggestions@main
       with:
         tool-name: ruff
         # extra-upload-changes: ruff.toml

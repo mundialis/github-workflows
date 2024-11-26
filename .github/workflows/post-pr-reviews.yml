@@ -2,6 +2,9 @@
 ---
 name: Post PR code suggestions
 
+on:
+  workflow_call:
+
 permissions: {}
 jobs:
   post-suggestions:
