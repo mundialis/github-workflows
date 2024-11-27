@@ -1,8 +1,8 @@
 # workflows
 
-## Python Linting
+## (Python) Linting
 
-The python3 linting workflow uses `black`, `flake8` and `pylint` to check the
+The python3 linting workflow uses `black`, `flake8`, `pylint`, `ruff` and `super-linter` to check the
 code quality.
 
 You can use it e.g. like this:
@@ -22,15 +22,28 @@ jobs:
 
 ```
 
-Examples how `flake8`, `pylint` `markdownlint` and `shellcheck` can be configured are in the
+Examples how `flake8`, `pylint`, `markdownlint`, `shellcheck` and `ruff` can be configured are in the
 [linting-config-examples](linting-config-examples)
-folder. The `pylint` configuration files do not need to be created if they
+folder. The `pylint` and `ruff` configuration files do not need to be created if they
 are not to be customized, scince they will be copied by the workflow if they
 do not exists. See [linting-config-examples](linting-config-examples/README.md) for more
 details on how to configure the individual linters.
 
 If one of the versions is set to an empty string the code quality check will be
 skipped.
+
+For the `ruff` linting also another job can also propose suggestions to a
+pull request. For this the additional job `post-pr-reviews` has to be added to the linting workflow e.g. like this:
+
+```
+...
+
+  post-pr-reviews:
+    needs: lint
+    if: ${{ needs.lint.result == 'failure' }}
+    uses: mundialis/github-workflows/.github/workflows/post-pr-reviews.yml@add_post_pr_reviews
+```
+
 
 ## GRASS GIS addon tests
 
