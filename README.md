@@ -32,8 +32,8 @@ details on how to configure the individual linters.
 If one of the versions is set to an empty string the code quality check will be
 skipped.
 
-For the `ruff` linting also another job can also propose suggestions to a
-pull request. For this the additional job `post-pr-reviews` has to be added to the linting workflow e.g. like this:
+For `ruff` and `black` linting, another job can propose suggestions to a pull request.
+For this the additional job `post-pr-reviews` has to be added to the linting workflow e.g. like this:
 
 ```
 ...
