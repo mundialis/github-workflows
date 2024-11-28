@@ -169,7 +169,7 @@ jobs:
       if: ${{ hashFiles('ruff.toml') == '' }}
       run: |
         echo "ruff.toml does not exists. Will be downloaded."
-        wget https://raw.githubusercontent.com/mundialis/github-workflows/main/linting-config-examples/ruff.toml
+        wget https://raw.githubusercontent.com/mundialis/github-workflows/main/linting-config-examples/ruff.toml && touch rmruff-e922498e-5492-4fb2-86d5-09a0a7e0d0a4
     - name: Run ruff (output annotations on fixable errors)
       run: |
         ruff check --config ruff.toml --output-format=github . --preview --unsafe-fixes
@@ -177,6 +177,10 @@ jobs:
     - name: Run ruff (apply fixes for suggestions)
       run: |
         ruff check --config ruff.toml . --preview --fix --unsafe-fixes
+    - name: No diff for temp ruff.toml
+      if: ${{ hashFiles('rmruff-e922498e-5492-4fb2-86d5-09a0a7e0d0a4') != '' }}
+      run: |
+        rm rmruff-e922498e-5492-4fb2-86d5-09a0a7e0d0a4 && rm ruff.toml
     - name: Create and upload code suggestions to apply for ruff
       id: diff-ruff
       if: ${{ !cancelled() }}
