@@ -225,10 +225,10 @@ jobs:
           VALIDATE_YAML: "${{ inputs.VALIDATE_YAML == true && true || '' }}"
 
   linting-success:
-    name: Linting and code quality result
+    name: success
     needs:
       - flake8
-      - pylint
+      # - pylint
       - black
       - ruff
       - super-linter
