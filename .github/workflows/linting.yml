@@ -223,3 +223,16 @@ jobs:
           VALIDATE_RENOVATE: "${{ inputs.VALIDATE_RENOVATE == true && true || '' }}"
           VALIDATE_XML: "${{ inputs.VALIDATE_XML == true && true || '' }}"
           VALIDATE_YAML: "${{ inputs.VALIDATE_YAML == true && true || '' }}"
+
+  linting-success:
+    name: Linting and code quality result
+    needs:
+      - flake8
+      - pylint
+      - black
+      - ruff
+      - super-linter
+    if: ${{ always() }}
+    uses: OSGeo/grass/.github/workflows/verify-success.yml
+    with:
+      needs_context: ${{ toJson(needs) }}
