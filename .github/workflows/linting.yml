@@ -233,6 +233,6 @@ jobs:
       - ruff
       - super-linter
     if: ${{ always() }}
-    uses: OSGeo/grass/.github/workflows/verify-success.yml
+    uses: OSGeo/grass/.github/workflows/verify-success.yml@main
     with:
       needs_context: ${{ toJson(needs) }}
