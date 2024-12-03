@@ -3,14 +3,19 @@ FROM osgeo/grass-gis:releasebranch_8_4-alpine
 ARG ADDON_NAME
 ARG GITHUB_REPOSITORY
 
+RUN apk add gcc make python3-dev musl-dev linux-headers
+
 WORKDIR /src
 COPY . /src
 
-RUN apk add gcc make python3-dev musl-dev linux-headers
-
 # create environment to install requirements
-RUN python -m venv addon-env
+RUN python -m venv --system-site-packages addon-env
 ENV PATH="/src/addon-env/bin:$PATH"
+# --system-site-packages only works for active virtual environment.
+# To use paths, below hack is needed..
+RUN export VERSION=$(python -c \
+    "import sys;print(f\"python{sys.version_info.major}.{sys.version_info.minor}\")"); \
+    echo "/usr/lib/$VERSION/site-packages/" > /src/addon-env/lib/$VERSION/site-packages/system-packages.pth
 RUN test -e requirements.txt && pip3 install -r requirements.txt || echo "No requirements.txt"
 
 # Compile GRASS GIS addon
