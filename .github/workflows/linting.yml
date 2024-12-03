@@ -191,7 +191,7 @@ jobs:
       uses: OSGeo/grass/.github/actions/create-upload-suggestions@main
       with:
         tool-name: ruff
-        extra-upload-changes: ruff.toml
+        # extra-upload-changes: ruff.toml
   super-linter:
     name: super-linter
     runs-on: ubuntu-latest
