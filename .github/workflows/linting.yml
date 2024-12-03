@@ -179,6 +179,8 @@ jobs:
         ruff check --config ruff.toml . --preview --fix --unsafe-fixes
     - name: Verify ruff changes (git status)
       run: git status
+    - name: Check git diff
+      run: git diff
     - name: No diff for temp ruff.toml
       if: ${{ hashFiles('rmruff-e922498e-5492-4fb2-86d5-09a0a7e0d0a4') != '' }}
       run: |
