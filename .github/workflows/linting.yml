@@ -186,7 +186,7 @@ jobs:
     - name: No diff for merged ruff.toml
       if: ${{ hashFiles('ruff-github-workflows.toml') != '' }}
       run: |
-        rm ruff-github-workflows.toml && rm ruff-merged
+        rm ruff-github-workflows.toml && rm ruff-merged.toml
     - name: No diff for temp ruff.toml
       if: ${{ hashFiles('rmruff-e922498e-5492-4fb2-86d5-09a0a7e0d0a4') != '' }}
       run: |
