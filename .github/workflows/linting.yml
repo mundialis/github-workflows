@@ -163,20 +163,30 @@ jobs:
     - name: Install pip dependencies
       run: |
         python -m pip install --upgrade pip
-        pip3 install ruff==${{ inputs.ruff-version }}
+        pip3 install ruff==${{ inputs.ruff-version }} toml-union
         ruff --version
     - name: Configure ruff
+      run: |
+        echo "Download ruff.toml..."
+        wget https://raw.githubusercontent.com/mundialis/github-workflows/main/linting-config-examples/ruff.toml -O ruff-github-workflows.toml
+    - name: Mock ruff config if not exists
       if: ${{ hashFiles('ruff.toml') == '' }}
       run: |
-        echo "ruff.toml does not exists. Will be downloaded."
-        wget https://raw.githubusercontent.com/mundialis/github-workflows/main/linting-config-examples/ruff.toml && touch rmruff-e922498e-5492-4fb2-86d5-09a0a7e0d0a4
+        touch ruff.toml && touch rmruff-e922498e-5492-4fb2-86d5-09a0a7e0d0a4
+    - name: Merge ruff config
+      run: |
+        toml-union ruff.toml ruff-github-workflows.toml -o ruff-merged.toml
     - name: Run ruff (output annotations on fixable errors)
       run: |
-        ruff check --config ruff.toml --output-format=github . --preview --unsafe-fixes
+        ruff check --config ruff-merged.toml --output-format=github . --preview --unsafe-fixes
       continue-on-error: true
     - name: Run ruff (apply fixes for suggestions)
       run: |
-        ruff check --config ruff.toml . --preview --fix --unsafe-fixes
+        ruff check --config ruff-merged.toml . --preview --fix --unsafe-fixes
+    - name: No diff for merged ruff.toml
+      if: ${{ hashFiles('ruff-github-workflows.toml') != '' }}
+      run: |
+        rm ruff-github-workflows.toml && rm ruff-merged
     - name: No diff for temp ruff.toml
       if: ${{ hashFiles('rmruff-e922498e-5492-4fb2-86d5-09a0a7e0d0a4') != '' }}
       run: |
