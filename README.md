@@ -25,8 +25,9 @@ jobs:
 Examples how `flake8`, `pylint`, `markdownlint`, `shellcheck` and `ruff` can be configured are in the
 [linting-config-examples](linting-config-examples)
 folder. The `pylint` and `ruff` configuration files do not need to be created if they
-are not to be customized, scince they will be copied by the workflow if they
-do not exists. See [linting-config-examples](linting-config-examples/README.md) for more
+are not to be customized, since they will be copied by the workflow if they
+do not exists, although an additional `ruff.toml` file will be merged.
+See [linting-config-examples](linting-config-examples/README.md) for more
 details on how to configure the individual linters.
 
 If one of the versions is set to an empty string the code quality check will be
