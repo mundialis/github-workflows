@@ -5,7 +5,7 @@ FROM python:3-slim
 # of this image, so it must be on root level simply named Dockerfile...
 
 RUN apt-get update && apt-get install jq wget -y
-RUN pip install --upgrade pip yq virtualenv
+RUN pip install --upgrade pip yq virtualenv toml-union
 
 # Copy linting workflow to identify linter versions if needed
 ENV WORKFLOW_LINTING_WORKFLOW=/github-workflows/.github/workflows/linting.yml

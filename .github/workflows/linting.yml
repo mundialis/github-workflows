@@ -169,12 +169,9 @@ jobs:
       run: |
         echo "Download ruff.toml..."
         wget https://raw.githubusercontent.com/mundialis/github-workflows/main/linting-config-examples/ruff.toml -O ruff-github-workflows.toml
-    - name: Mock ruff config if not exists
-      if: ${{ hashFiles('ruff.toml') == '' }}
-      run: |
-        touch ruff.toml && touch rmruff-e922498e-5492-4fb2-86d5-09a0a7e0d0a4
     - name: Merge ruff config
       run: |
+        # Merge shared config with local one. Also works if no ruff.toml exists.
         toml-union ruff.toml ruff-github-workflows.toml -o ruff-merged.toml
     - name: Run ruff (output annotations on fixable errors)
       run: |
@@ -187,10 +184,6 @@ jobs:
       if: ${{ hashFiles('ruff-github-workflows.toml') != '' }}
       run: |
         rm ruff-github-workflows.toml && rm ruff-merged.toml
-    - name: No diff for temp ruff.toml
-      if: ${{ hashFiles('rmruff-e922498e-5492-4fb2-86d5-09a0a7e0d0a4') != '' }}
-      run: |
-        rm rmruff-e922498e-5492-4fb2-86d5-09a0a7e0d0a4 && rm ruff.toml
     - name: Create and upload code suggestions to apply for ruff
       id: diff-ruff
       if: ${{ !cancelled() }}
