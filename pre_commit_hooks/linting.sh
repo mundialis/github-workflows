@@ -192,19 +192,22 @@ if [ $RUN_RUFF != "FALSE" ]
 then
     echo
     echo "RUFF:"
-    if test -f "ruff.toml"
-    then
-        echo "ruff.toml exists"
-    else
-        # Same behaviour as in workflow
-        echo "ruff.toml does not exists. Will be downloaded."
-        wget https://raw.githubusercontent.com/mundialis/github-workflows/main/linting-config-examples/ruff.toml
-    fi
-    ruff check --config ruff.toml .
+    wget -q https://raw.githubusercontent.com/mundialis/github-workflows/main/linting-config-examples/ruff.toml -O ruff-github-workflows.toml
+    # Merge shared config with local one. Also works if no ruff.toml exists.
+    # The `| awk NF` at the end omits output of empy lines.
+    toml-union ruff.toml ruff-github-workflows.toml -o ruff-merged.toml | awk NF
+    # Run ruff (apply fixes for suggestions)
+    # ruff check --config ruff-merged.toml . --preview --fix --unsafe-fixes
+    # Run ruff (output annotations on fixable errors)
+    # stdout is omitted, despite of `1>&2` ?
+    ruff check --config ruff-merged.toml --output-format=github . --preview --unsafe-fixes 1>&2
     if [ $? -ne 0 ]
     then
         RETURNCODE=1
-        FAILINGSTEP="$FAILINGSTEP RUFF (run 'ruff check --config ruff.toml .')"
+        FAILINGSTEP="$FAILINGSTEP RUFF (run 'ruff check --config ruff-merged.toml --output-format=github . --preview --unsafe-fixes')"
+    else
+        # See above - STDOUT is omitted, so print here default output
+        echo "All checks passed!"
     fi
 else
     echo

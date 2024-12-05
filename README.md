@@ -141,15 +141,15 @@ jobs:
 
 ## Python Linting
 
-The python3 linting pre-commit hook uses `black`, `flake8` and `pylint` to check the
-code quality.
+The python3 linting pre-commit hook uses `black`, `flake8`, `pylint`
+and `ruff` to check the code quality.
 
 You can use it by adding a `.pre-commit-config.yml` file to the repo containing e.g.:
 
 ```
 repos:
 -   repo: https://github.com/mundialis/github-workflows
-    rev: 1.0.3
+    rev: 1.3.1
     hooks:
     -   id: linting
 ```
