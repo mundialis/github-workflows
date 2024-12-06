@@ -220,12 +220,10 @@ then
     echo
     echo "SUPERLINTER:"
     # overwrite rules with default config
-    . /environment.txt
-    export $(cut -d= -f1 /environment.txt)
+    . /super-linter.txt && export $(cut -d= -f1 /super-linter.txt)
     # overwrite rules with custom repo config
-    `cat /tmp/lint/.github/workflows/linting.yml | yq .jobs.lint.with | grep -v "-version" | jq -r 'to_entries[] | "export \(.key)=\(.value)"'`
-    export RUN_LOCAL=TRUE
-    export DEFAULT_BRANCH=main
+    `cat /src/.github/workflows/linting.yml | yq .jobs.lint.with | grep -v "-version" | jq -r 'to_entries[] | "export \(.key)=\(.value)"'`
+    # run linting script
     bash /action/lib/linter.sh
     if [ $? -ne 0 ]
     then

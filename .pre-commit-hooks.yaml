@@ -2,25 +2,4 @@
     name: linting (via docker)
     entry: /linting.sh
     language: docker
--   id: super-linting
-    name: super-linter (via docker)
-    language: docker_image
-    entry: >
-        -e RUN_LOCAL=true
-        -e DEFAULT_BRANCH=main
-        -e DEFAULT_WORKSPACE=/src
-        -e BASH_SEVERITY=warning
-        -e VALIDATE_BASH=true
-        -e VALIDATE_BASH_EXEC=true
-        -e VALIDATE_CSS=true
-        -e VALIDATE_DOCKERFILE_HADOLINT=true
-        -e VALIDATE_GITHUB_ACTIONS=true
-        -e VALIDATE_HTML=true
-        -e VALIDATE_JAVASCRIPT_ES=true
-        -e VALIDATE_JAVASCRIPT_STANDARD=true
-        -e VALIDATE_JSON=true
-        -e VALIDATE_MARKDOWN=true
-        -e VALIDATE_POWERSHELL=true
-        -e VALIDATE_RENOVATE=true
-        -e VALIDATE_XML=true
-        mundialis/super-linter:latest
+    require_serial: true
