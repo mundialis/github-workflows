@@ -39,10 +39,11 @@ then
     then
         RUN_BLACK=FALSE
         echo "- black configured to be skipped (empty string)"
-    elif [ $DEFAULT_BLACK_VERSION != $NEW_BLACK_VERSION ]
+    elif [ $DEFAULT_BLACK_VERSION != `echo $NEW_BLACK_VERSION | tr -d '"'` ]
     then
-        # sed would fail with Permission denied
+        # sed or pip would fail with Permission denied
         # sed -i "s+$DEFAULT_BLACK_VERSION+$NEW_BLACK_VERSION+g" /requirements.txt
+        # pip3 install black==`echo $NEW_BLACK_VERSION | tr -d '"'`
         echo "- Warning: overwritten black version will not be installed!"
     fi
 else
@@ -109,7 +110,7 @@ echo
 # Install linters #
 ###################
 # TODO: if versions are not default versions, this fails due to missing permissions
-pip3 install -r /requirements.txt
+# pip3 install -r /requirements.txt
 echo
 echo "flake8: `flake8 --version`"
 echo "pylint: `pylint --version`"
@@ -222,7 +223,7 @@ then
     # overwrite rules with default config
     . /super-linter.txt && export $(cut -d= -f1 /super-linter.txt)
     # overwrite rules with custom repo config
-    `cat /src/.github/workflows/linting.yml | yq .jobs.lint.with | grep -v "-version" | jq -r 'to_entries[] | "export \(.key)=\(.value)"'`
+    `cat /src/.github/workflows/linting.yml | yq .jobs.lint.with | grep -v "-version" | tr -d ',' | jq -r 'to_entries[] | "export \(.key)=\(.value)"'`
     # run linting script
     bash /action/lib/linter.sh
     if [ $? -ne 0 ]

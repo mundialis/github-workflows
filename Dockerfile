@@ -23,6 +23,7 @@ COPY pre_commit_hooks/linting.sh /linting.sh
 
 CMD [ "bash /linting.sh" ]
 
+# Below for super-linter
 
 # pre-commit seems to set too strict permissions:
 # error: could not lock config file //.gitconfig: Permission denied
@@ -31,9 +32,9 @@ CMD [ "bash /linting.sh" ]
 RUN sed -i 's+git config --global --add safe.directory+git config --add safe.directory+g' /action/lib/linter.sh
 
 # save to be able to export later
-RUN echo "export RUN_LOCAL=TRUE" >> /super-linter.txt
-RUN echo "export DEFAULT_BRANCH=main" >> /super-linter.txt
-RUN echo "export DEFAULT_WORKSPACE=/src" >> /super-linter.txt
+RUN echo "RUN_LOCAL=TRUE" >> /super-linter.txt
+RUN echo "DEFAULT_BRANCH=main" >> /super-linter.txt
+RUN echo "DEFAULT_WORKSPACE=/src" >> /super-linter.txt
 RUN echo BASH_SEVERITY=$(cat $WORKFLOW_LINTING_WORKFLOW | yq .on.workflow_call.inputs | jq -r '."BASH_SEVERITY"'.default) >> /super-linter.txt
 RUN echo VALIDATE_BASH=$(cat $WORKFLOW_LINTING_WORKFLOW | yq .on.workflow_call.inputs | jq -r '."VALIDATE_BASH"'.default) >> /super-linter.txt
 RUN echo VALIDATE_BASH_EXEC=$(cat $WORKFLOW_LINTING_WORKFLOW | yq .on.workflow_call.inputs | jq -r '."VALIDATE_BASH_EXEC"'.default) >> /super-linter.txt
