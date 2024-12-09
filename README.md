@@ -42,7 +42,7 @@ For this the additional job `post-pr-reviews` has to be added to the linting wor
   post-pr-reviews:
     needs: lint
     if: ${{ needs.lint.result == 'failure' }}
-    uses: mundialis/github-workflows/.github/workflows/post-pr-reviews.yml@add_post_pr_reviews
+    uses: mundialis/github-workflows/.github/workflows/post-pr-reviews.yml@main
 ```
 
 
