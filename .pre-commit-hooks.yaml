@@ -2,3 +2,4 @@
     name: linting (via docker)
     entry: /linting.sh
     language: docker
+    require_serial: true
