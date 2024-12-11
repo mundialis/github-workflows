@@ -10,7 +10,12 @@ You can use it e.g. like this:
 ```
 name: Linting and code quality check
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
 
 jobs:
   lint:
@@ -22,6 +27,9 @@ jobs:
 
 ```
 
+or use e.g. `      pylint-version: ''` to skip checks with pylint. (If one of the versions is set to an empty string the code quality check will be
+skipped.)
+
 Examples how `flake8`, `pylint`, `markdownlint`, `shellcheck` and `ruff` can be configured are in the
 [linting-config-examples](linting-config-examples)
 folder. The `pylint` and `ruff` configuration files do not need to be created if they
@@ -30,20 +38,28 @@ do not exists, although an additional `ruff.toml` file will be merged.
 See [linting-config-examples](linting-config-examples/README.md) for more
 details on how to configure the individual linters.
 
-If one of the versions is set to an empty string the code quality check will be
-skipped.
+### (Python) Linting - reviewdog
 
-For `ruff` and `black` linting, another job can propose suggestions to a pull request.
-For this the additional job `post-pr-reviews` has to be added to the linting workflow e.g. like this:
+For `ruff` and `black` linting, another workflow can propose suggestions to a pull request.
+For this the additional file `post-pr-reviews.yml` has to be created e.g. like this:
 
 ```
-...
+name: Post PR code suggestions
 
+on:
+  workflow_run:
+    workflows: ["Linting and code quality check"]
+    types:
+      - completed
+
+jobs:
   post-pr-reviews:
-    needs: lint
-    if: ${{ needs.lint.result == 'failure' }}
     uses: mundialis/github-workflows/.github/workflows/post-pr-reviews.yml@main
 ```
+
+It needs to be in the `main` branch to become active.
+Code suggestions are only made for ruff and black if they are fixable by these tools.
+Also suggestions can only be added near to lines changed in the PR.
 
 
 ## GRASS GIS addon tests
