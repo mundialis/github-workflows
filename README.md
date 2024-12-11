@@ -213,11 +213,13 @@ When the linting config files do not exist in your repository because no general
 are necessary, the default configs are downloaded. To avoid duplicate downloads and to be
 able to lint locally, they are kept and it makes sense to add them to the `.gitignore` file.
 So if .pylintrc and .pylintrc_allowed_to_fail already exist, do nothing, else add them to
-`.gitignore` like so:
+`.gitignore`. Also add some temporary config files for ruff to `.gitignore` like so:
 
 ```
 .pylintrc
 .pylintrc_allowed_to_fail
+ruff-github-workflows.toml
+ruff-merged.toml
 ```
 
 Once in a while you can remove them manually to be in sync with the github-workflows default configs.
@@ -248,4 +250,75 @@ If you want to start a container to debug the executed file, check last build do
 
 ```
 docker run --rm -it --entrypoint sh -v $PWD:/src:rw,Z pre-commit-33a9cd78e77e8963da808aa71baf0b54
+```
+
+## Local linting
+
+
+For quick local linting with the same flags as the linters use in the workflow and pre-commit,
+you can add this snippet to your `~/.bashrc`:
+
+Requirements:
+- `pip install toml-union`
+- have a local checkout of this repo at `~/repos/github-workflows` (or adjust below)
+
+```
+flake8() {
+    if [ -z "$1" ]
+    then
+        LINT_TARGET=.
+    else
+        LINT_TARGET=$1
+    fi
+
+    /home/`whoami`/.local/bin/flake8 --count --statistics --show-source --jobs=4 $LINT_TARGET
+}
+
+alias black="black --check --diff --line-length 79 ."
+alias pylint="pylint ."
+
+ruff () {
+    toml-union ruff.toml ~/repos/github-workflows/linting-config-examples/ruff.toml -o ruff-merged.toml
+    /home/`whoami`/.local/bin/ruff check --config ruff-merged.toml --output-format=concise . --preview --unsafe-fixes
+}
+
+lint() {
+    echo "Which Tool?"
+    select tool in flake8 pylint black ruff
+    do
+        echo "Linting with $tool..."
+        case $tool in
+          flake8)
+            flake8
+            break
+            ;;
+          pylint)
+            pylint
+            break
+            ;;
+          black)
+            black
+            break
+            ;;
+          ruff)
+            ruff
+            break
+            ;;
+        esac
+    done
+}
+```
+
+Example usage:
+```
+17:49 $ lint
+Which Tool?
+1) flake8
+2) pylint
+3) black
+4) ruff
+#? 3
+Linting with black...
+All done! ✨ 🍰 ✨
+208 files would be left unchanged.
 ```
