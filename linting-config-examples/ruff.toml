@@ -80,7 +80,7 @@ lint.select = [
 # Overwrite the following sections as needed
 # in the repositories using the lint workflow.
 
-ignore = [
+lint.ignore = [
       "D203",     # one-blank-line-before-class
 #     "E402",     # module-import-not-at-top-of-file
 #     "E501",     # line-too-long
