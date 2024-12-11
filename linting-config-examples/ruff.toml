@@ -82,6 +82,7 @@ lint.select = [
 
 lint.ignore = [
       "D203",     # one-blank-line-before-class
+      "D213",     # multi-line-summary-second-line
 #     "E402",     # module-import-not-at-top-of-file
 #     "E501",     # line-too-long
 ]
