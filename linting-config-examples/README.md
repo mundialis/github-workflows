@@ -28,12 +28,18 @@ The linting config is aligned to the [one from GRASS GIS](https://github.com/OSG
 Per default, a lot of linting rules are active. If needed, add a `ruff.toml` config file to the root of your repository
 and add rules which to ignore.
 See example here or visit [official documentation](https://docs.astral.sh/ruff/).
-`ruff check --config ruff-merged.toml --output-format=full . --preview --unsafe-fixes`
+```
+ruff check --config ruff-merged.toml --output-format=full . --preview --unsafe-fixes
+```
 Merge repository-specific `ruff.toml` and the one from this repo:
-`pip install toml-union`
-`toml-union ruff.toml ~/repos/github-workflows/linting-config-examples/ruff.toml -o ruff-merged.toml`
+```
+pip install toml-union
+toml-union ruff.toml ~/repos/github-workflows/linting-config-examples/ruff.toml -o ruff-merged.toml
+```
 For initial setup in your repository, the list of rules to be ignored can be generated:
-`ruff check --config ruff-merged.toml . --preview --unsafe-fixes --output-format json | jq .[].code | sort -u`
+```
+ruff check --config ruff-merged.toml . --preview --unsafe-fixes --output-format json | jq .[].code | sort -u
+```
 (Need to add `,` at the end of each line).
 
 ## superlinter
