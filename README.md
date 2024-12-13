@@ -230,7 +230,7 @@ It is also recommended to add a `renovate.json` config with pre-commit enabled t
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base"
+    "config:recommended"
   ],
   "pre-commit": {
     "enabled": true
