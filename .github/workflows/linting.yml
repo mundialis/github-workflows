@@ -18,7 +18,7 @@ on:
       ruff-version:
         required: false
         type: string
-        default: '0.7.0'
+        default: '0.8.3'
       BASH_SEVERITY:
         required: false
         type: string
