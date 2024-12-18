@@ -80,10 +80,12 @@ lint.select = [
 # Overwrite the following sections as needed
 # in the repositories using the lint workflow.
 
-# ignore = [
+lint.ignore = [
+      "D203",     # one-blank-line-before-class
+      "D213",     # multi-line-summary-second-line
 #     "E402",     # module-import-not-at-top-of-file
 #     "E501",     # line-too-long
-# ]
+]
 
 # [lint.per-file-ignores]
 # Define file-specific linting rule ignores
