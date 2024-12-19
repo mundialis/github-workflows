@@ -87,6 +87,9 @@ lint.ignore = [
 #     "E501",     # line-too-long
 ]
 
-# [lint.per-file-ignores]
+[lint.per-file-ignores]
 # Define file-specific linting rule ignores
-# "lib_dop/r_dop_import_lib.py" = ["ERA001", "PLR2004"]
+# S101: Use of assert detected
+"tests/*" = ["S101"]
+"testsuite/*" = ["S101"]
+"*/testsuite/*" = ["S101"]
