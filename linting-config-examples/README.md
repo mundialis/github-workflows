@@ -2,10 +2,10 @@
 
 The reusable linting workflow tries to be as strict as possible.
 It is up to the repositories using it to define reasonable exceptions.
-Here are some ways described how this can be done.
+Here, some ways are described how this can be done.
 
 ## flake8
-Simply add a .flake8 config file to the root of your repository
+Simply add a `.flake8` config file to the root of your repository.
 See example here or visit [official documentation](https://flake8.pycqa.org/en/latest/user/configuration.html).
 `flake8 --config=.flake8 --count --statistics --show-source .`
 
@@ -15,18 +15,21 @@ See https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.h
 `black --check --diff --line-length 79 .`
 
 ## pylint
-There are two different configs - one which must be followed and one which is more strict
-but allowed to fail. Both are contained in this repository and used for the reusable linting
-workflow. If that fits, all is good. If you need more specific adjustments, name them the
-same way and place them in your directory root to adjust.
+There are two different configs - one which must be followed and one which is 
+more strict but allowed to fail. Both are contained in this repository and used
+also by other repositories for the reusable linting workflow. If that works, you
+do not have to do anything. If you need more specific adjustments, copy them
+(with same name) to your root directory to adjust.
 `pylint .`
 `pylint --rc-file=.pylintrc_allowed_to_fail .`
+# TODO: possible to change workflow so that standard config from this repo and additional config from repo where the workflow is used are both used
 
 ## ruff
-ruff contains rules inspired by black, flake8, pylint and more and is extremely fast in linting and formatting Python code.
-The linting config is aligned to the [one from GRASS GIS](https://github.com/OSGeo/grass/blob/main/pyproject.toml).
-Per default, a lot of linting rules are active. If needed, add a `ruff.toml` config file to the root of your repository
-and add rules which to ignore.
+ruff contains rules inspired by black, flake8, pylint and more and is extremely
+fast in linting and formatting Python code.
+The linting config is aligned to the [config from GRASS GIS](https://github.com/OSGeo/grass/blob/main/pyproject.toml).
+Per default, a lot of linting rules are active. If needed, add a `ruff.toml`
+config file to the root of your repository and add rules to ignore.
 See example here or visit [official documentation](https://docs.astral.sh/ruff/).
 ```
 ruff check --config ruff-merged.toml --output-format=full . --preview --unsafe-fixes
@@ -44,7 +47,8 @@ ruff check --config ruff-merged.toml . --preview --unsafe-fixes --output-format 
 (Need to add `,` at the end of each line).
 
 ## superlinter
-Superlinter is a wrapper for many different linters. Each has a different way to be configured.
+Superlinter is a wrapper for many different linters. Each has a different way to
+be configured. Configs can be used in own repo to define rules of what to ignore.
 Example config files exist for [markdownlint](https://github.com/DavidAnson/markdownlint)
 and [shellcheck](https://github.com/koalaman/shellcheck).
 
@@ -84,7 +88,7 @@ Or more sophisticated
 ## Run locally
 
 When not using pre-commit, all files can be checked locally via docker command.
-This way, all used linters don't need to be installed locally individually.
+This way, the used linters don't need to be installed locally individually.
 As linters might change, check in `.github/workflows/linting.yml` around L160
 which environmental variables can to be used.
 
@@ -108,7 +112,7 @@ docker run \
   -e VALIDATE_RENOVATE=true \
   -e VALIDATE_XML=true \
   -e VALIDATE_YAML=true \
-  -v /home/ctawalika/repos/actinia/actinia-core/:/tmp/lint \
+  -v ${HOME}/repos/actinia/actinia-core/:/tmp/lint \
   ghcr.io/super-linter/super-linter:latest
 ```
 
