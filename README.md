@@ -277,7 +277,8 @@ alias black="black --check --diff --line-length 79 ."
 alias pylint="pylint ."
 
 ruff () {
-    toml-union ruff.toml ~/repos/github-workflows/linting-config-examples/ruff.toml -o ruff-merged.toml
+    wget --continue https://raw.githubusercontent.com/mundialis/github-workflows/refs/heads/main/linting-config-examples/ruff.toml -O /tmp/ruff.toml -q
+    toml-union ruff.toml /tmp/ruff.toml -o ruff-merged.toml
     /home/`whoami`/.local/bin/ruff check --config ruff-merged.toml --output-format=concise . --preview --unsafe-fixes
 }
 
