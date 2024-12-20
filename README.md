@@ -27,13 +27,13 @@ jobs:
 
 ```
 
-or use e.g. `      pylint-version: ''` to skip checks with pylint. (If one of the versions is set to an empty string the code quality check will be
-skipped.)
+or use e.g. `      pylint-version: ''` to skip checks with pylint. (If one of 
+the versions is set to an empty string the code quality check will be skipped.)
 
-Examples how `flake8`, `pylint`, `markdownlint`, `shellcheck` and `ruff` can be configured are in the
-[linting-config-examples](linting-config-examples)
-folder. The `pylint` and `ruff` configuration files do not need to be created if they
-are not to be customized, since they will be copied by the workflow if they
+Examples how `flake8`, `pylint`, `markdownlint`, `shellcheck` and `ruff` can be 
+configured are in the [linting-config-examples](linting-config-examples)
+folder. The `pylint` and `ruff` configuration files do not need to be created if
+they are not to be customized, since they will be copied by the workflow if they
 do not exists, although an additional `ruff.toml` file will be merged.
 See [linting-config-examples](linting-config-examples/README.md) for more
 details on how to configure the individual linters.
@@ -154,7 +154,6 @@ jobs:
 ```
 
 # pre-commit
-
 ## Python Linting
 
 The python3 linting pre-commit hook uses `black`, `flake8`, `pylint`
@@ -165,7 +164,7 @@ You can use it by adding a `.pre-commit-config.yml` file to the repo containing 
 ```
 repos:
 -   repo: https://github.com/mundialis/github-workflows
-    rev: 1.3.1
+    rev: 1.4.0
     hooks:
     -   id: linting
 ```
@@ -278,8 +277,7 @@ alias black="black --check --diff --line-length 79 ."
 alias pylint="pylint ."
 
 ruff () {
-    wget --continue https://raw.githubusercontent.com/mundialis/github-workflows/refs/heads/main/linting-config-examples/ruff.toml -O /tmp/ruff.toml -q
-    toml-union ruff.toml /tmp/ruff.toml -o ruff-merged.toml
+    toml-union ruff.toml ~/repos/github-workflows/linting-config-examples/ruff.toml -o ruff-merged.toml
     /home/`whoami`/.local/bin/ruff check --config ruff-merged.toml --output-format=concise . --preview --unsafe-fixes
 }
 
