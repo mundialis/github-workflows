@@ -34,7 +34,8 @@ ruff check --config ruff-merged.toml --output-format=full . --preview --unsafe-f
 Merge repository-specific `ruff.toml` and the one from this repo:
 ```
 pip install toml-union
-toml-union ruff.toml ~/repos/github-workflows/linting-config-examples/ruff.toml -o ruff-merged.toml
+wget --continue https://raw.githubusercontent.com/mundialis/github-workflows/refs/heads/main/linting-config-examples/ruff.toml -O /tmp/ruff.toml -q
+toml-union ruff.toml /tmp/ruff.toml -o ruff-merged.toml
 ```
 For initial setup in your repository, the list of rules to be ignored can be generated:
 ```
