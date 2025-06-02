@@ -9,6 +9,7 @@ permissions: {}
 jobs:
   post-suggestions:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
     # Only run on failures, since no changes are needed on success
     # if: >
     #   (github.event.workflow_run.event == 'pull_request' &&
