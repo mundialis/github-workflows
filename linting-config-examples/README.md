@@ -13,7 +13,7 @@ See example here or visit [official documentation](https://flake8.pycqa.org/en/l
 Nothing needed, it uses config file of flake8.
 See https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html
 `black --check --diff --line-length 79 .`
-- Note: if certain row should be skipped for linting (cause black linting is not wanted): add `  # fmt: skip` to relevant row in code.
+- Note: if certain line should be skipped for linting (cause black linting is not wanted): add `  # fmt: skip` to relevant line in code.
 
 ## pylint
 There are two different configs - one which must be followed and one which is more strict
