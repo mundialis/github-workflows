@@ -10,15 +10,15 @@ on:
       flake8-version:
         required: false
         type: string
-        default: '7.0.0'
+        default: '7.3.0'
       pylint-version:
         required: false
         type: string
-        default: '3.2.2'
+        default: '3.3.8'
       ruff-version:
         required: false
         type: string
-        default: '0.8.3'
+        default: '0.12.10'
       BASH_SEVERITY:
         required: false
         type: string
