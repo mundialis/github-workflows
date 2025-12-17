@@ -18,7 +18,7 @@ jobs:
           echo $ID
           docker cp $ID:/src/build/docs/html public
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: "public"
 
