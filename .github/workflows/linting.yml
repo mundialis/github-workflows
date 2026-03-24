@@ -79,6 +79,9 @@ on:
         required: false
         type: boolean
         default: true
+      FILTER_REGEX_EXCLUDE:
+        required: false
+        type: string
 
 jobs:
   flake8:
@@ -226,3 +229,4 @@ jobs:
           VALIDATE_RENOVATE: "${{ inputs.VALIDATE_RENOVATE == true && true || '' }}"
           VALIDATE_XML: "${{ inputs.VALIDATE_XML == true && true || '' }}"
           VALIDATE_YAML: "${{ inputs.VALIDATE_YAML == true && true || '' }}"
+          FILTER_REGEX_EXCLUDE: ${{ inputs.FILTER_REGEX_EXCLUDE }}
