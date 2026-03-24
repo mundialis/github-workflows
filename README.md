@@ -38,6 +38,20 @@ do not exists, although an additional `ruff.toml` file will be merged.
 See [linting-config-examples](linting-config-examples/README.md) for more
 details on how to configure the individual linters.
 
+To exclude files (files, folders or patterns) from linting completely 
+(e.g. to exclude specific files from JSON linting via super-linter) 
+add them to the `linting.yml` in the repo where the workflow is used, e.g.:
+
+```
+jobs:
+  lint:
+    uses: mundialis/github-workflows/.github/workflows/linting.yml@main
+    with:
+      FILTER_REGEX_EXCLUDE: ".*processing/templates/template_MAIN_loop.json"
+```
+
+Attention: This skips the whole file during linting! -> all-or-nothing per file
+
 ### (Python) Linting - reviewdog
 
 For `ruff` and `black` linting, another workflow can propose suggestions to a pull request.
