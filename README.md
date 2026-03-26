@@ -38,7 +38,7 @@ do not exists, although an additional `ruff.toml` file will be merged.
 See [linting-config-examples](linting-config-examples/README.md) for more
 details on how to configure the individual linters.
 
-To exclude files (files, folders or patterns) from linting completely 
+To exclude files (files, folders or patterns) to be linted with super linter completely 
 (e.g. to exclude specific files from JSON linting via super-linter) 
 add them to the `linting.yml` in the repo where the workflow is used, e.g.:
 
@@ -47,10 +47,16 @@ jobs:
   lint:
     uses: mundialis/github-workflows/.github/workflows/linting.yml@main
     with:
-      FILTER_REGEX_EXCLUDE: ".*processing/templates/template_MAIN_loop.json"
+      SUPER_LINTER_FILTER_REGEX_EXCLUDE: ".*processing/templates/template_MAIN_loop.json"
 ```
 
-Attention: This skips the whole file during linting! -> all-or-nothing per file
+Attention: This skips the whole file to be linted with super-linter!
+ -> all-or-nothing per file
+To exlude python files, use the dedicated exclude configs (e.g. `.flake8`).
+
+Always prefer to exlude more specific rules instead of a whole file 
+as explained in the [linting-config-example](https://github.com/mundialis/github-workflows/tree/main/linting-config-examples#superlinter)
+
 
 ### (Python) Linting - reviewdog
 
