@@ -225,7 +225,7 @@ jobs:
           VALIDATE_JAVASCRIPT_STANDARD: "${{ inputs.VALIDATE_JAVASCRIPT_STANDARD == true && true || '' }}"
           VALIDATE_JSON: "${{ inputs.VALIDATE_JSON == true && true || '' }}"
           VALIDATE_MARKDOWN: "${{ inputs.VALIDATE_MARKDOWN == true && true || '' }}"
-          MARKDOWNLINT_DISABLE_RULES: "MD041"
+          MARKDOWNLINT_DISABLE_RULES: MD041
           VALIDATE_POWERSHELL: "${{ inputs.VALIDATE_POWERSHELL == true && true || '' }}"
           VALIDATE_RENOVATE: "${{ inputs.VALIDATE_RENOVATE == true && true || '' }}"
           VALIDATE_XML: "${{ inputs.VALIDATE_XML == true && true || '' }}"
