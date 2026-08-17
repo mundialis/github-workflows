@@ -174,9 +174,11 @@ jobs:
 ```
 ## SBOM Vulnerability Scan
 The SBOM vulnerability scan workflow builds a Docker image, generates a
-CycloneDX SBOM with Syft and scans the generated SBOM for known
-vulnerabilities with Grype.
+CycloneDX SBOM with Syft, scans the generated SBOM for known vulnerabilities
+with Grype, and uploads the vulnerability results to GitHub Code Scanning.
+
 You can use it e.g. like this:
+
 ```yaml
 name: SBOM Vulnerability Scan
 
@@ -186,6 +188,10 @@ on:
 
 jobs:
   sbom-scan:
+    permissions:
+      contents: read
+      security-events: write
+
     uses: mundialis/github-workflows/.github/workflows/sbom-vulnerability-scan.yml@main
     with:
       dockerfile: docker/actinia-core-alpine/Dockerfile
@@ -194,6 +200,11 @@ jobs:
 For reuse, the `dockerfile` input must be adapted to the path of the Dockerfile
 in the calling repository.
 
+The calling job requires the following permissions:
+
+- `contents: read` to check out the repository.
+- `security-events: write` to upload the vulnerability results to GitHub Code Scanning.
+
 Optional inputs:
 
 - `image`: Name and tag of the locally built Docker image. Default: `localbuild/testimage:latest`.
@@ -201,6 +212,8 @@ Optional inputs:
 cutoff are found.  Default: `false`.
 
 The generated SBOM is uploaded as `image.cyclonedx.json`.
+
+The vulnerability results are available under **Security and quality** → **Code scanning**.
 
 # pre-commit
 
