@@ -187,7 +187,7 @@ name: SBOM Vulnerability Scan
 
 on:
   push:
-    branches: [main]
+    branches: [ "main" ]
 
 jobs:
   sbom-scan:
