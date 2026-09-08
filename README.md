@@ -176,7 +176,12 @@ jobs:
 
 The SBOM vulnerability scan workflow generates a CycloneDX SBOM and scans
 dependencies for known vulnerabilities with Grype. The workflow can be used
-with either a Dockerfile or a `requirements.txt` file.
+with a Dockerfile, a `requirements.txt` file, or a `pyproject.toml` file.
+
+For Docker-based projects, Grype scans the SBOM generated from the Docker image.
+For Python projects, a virtual environment is created from either
+`requirements.txt` or `pyproject.toml`, and Grype scans the installed virtual
+environment directly.
 
 The vulnerability results are uploaded to GitHub Code Scanning.
 
@@ -199,12 +204,14 @@ jobs:
     with:
       dockerfile: docker/actinia-core-alpine/Dockerfile
       # requirements: requirements.txt
+      # pyproject: pyproject.toml
 ```
 
 Provide exactly one of the following inputs:
 
 - `dockerfile`: Path to the Dockerfile.
 - `requirements`: Path to the requirements.txt file.
+- `pyproject`: Path to the pyproject.toml file.
 
 The calling job requires the following permissions:
 
@@ -217,7 +224,7 @@ Optional inputs:
 - `fail-build`: Set to `true` if the workflow should fail when vulnerabilities above the severity 
 cutoff are found.  Default: `false`.
 
-The generated SBOM is uploaded as workflow artifact.
+The generated SBOM is uploaded as a workflow artifact.
 
 The vulnerability results are available under **Security and quality** → **Code scanning**.
 
