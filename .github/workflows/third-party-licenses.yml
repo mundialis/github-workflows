@@ -126,6 +126,7 @@ jobs:
           image: license-scan-image
           format: syft-json
           output-file: sbom.json
+          upload-artifact: false
           # upload-artifact: true
           # artifact-name: sbom.json
 
