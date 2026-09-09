@@ -180,8 +180,9 @@ with a Dockerfile, a `requirements.txt` file, or a `pyproject.toml` file.
 
 For Docker-based projects, Grype scans the SBOM generated from the Docker image.
 For Python projects, a virtual environment is created from either
-`requirements.txt` or `pyproject.toml`, and Grype scans the installed virtual
-environment directly.
+`requirements.txt` or `pyproject.toml`. Grype scans the virtual environment
+directly because this provides valid SARIF artifact locations for GitHub Code
+Scanning.
 
 The vulnerability results are uploaded to GitHub Code Scanning.
 
@@ -219,12 +220,11 @@ The calling job requires the following permissions:
 - `security-events: write` to upload the vulnerability results to GitHub Code Scanning.
 
 Optional inputs:
-
-- `image`: Name and tag of the locally built Docker image. Default: `localbuild/testimage:latest`.
+- `fetch_depth`: Number of commits to fetch during checkout. Use `0` to fetch the full history and tags. Default: `1`.
 - `fail-build`: Set to `true` if the workflow should fail when vulnerabilities above the severity 
 cutoff are found.  Default: `false`.
 
-The generated SBOM is uploaded as a workflow artifact.
+The generated Docker or Python SBOM is uploaded as a workflow artifact.
 
 The vulnerability results are available under **Security and quality** → **Code scanning**.
 
