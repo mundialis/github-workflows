@@ -172,6 +172,61 @@ jobs:
     secrets:
       PYPI_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
 ```
+## SBOM Vulnerability Scan
+
+The SBOM vulnerability scan workflow generates a CycloneDX SBOM and scans
+dependencies for known vulnerabilities with Grype. The workflow can be used
+with a Dockerfile, a `requirements.txt` file, or a `pyproject.toml` file.
+
+For Docker-based projects, Grype scans the SBOM generated from the Docker image.
+For Python projects, a virtual environment is created from either
+`requirements.txt` or `pyproject.toml`. Grype scans the virtual environment
+directly because this provides valid SARIF artifact locations for GitHub Code
+Scanning.
+
+The vulnerability results are uploaded to GitHub Code Scanning.
+
+You can use it e.g. like this:
+
+```yaml
+name: SBOM Vulnerability Scan
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  sbom-scan:
+    permissions:
+      contents: read
+      security-events: write
+
+    uses: mundialis/github-workflows/.github/workflows/sbom-vulnerability-scan.yml@main
+    with:
+      dockerfile: docker/actinia-core-alpine/Dockerfile
+      # requirements: requirements.txt
+      # pyproject: pyproject.toml
+```
+
+Provide exactly one of the following inputs:
+
+- `dockerfile`: Path to the Dockerfile.
+- `requirements`: Path to the requirements.txt file.
+- `pyproject`: Path to the pyproject.toml file.
+
+The calling job requires the following permissions:
+
+- `contents: read` to check out the repository.
+- `security-events: write` to upload the vulnerability results to GitHub Code Scanning.
+
+Optional inputs:
+- `fetch_depth`: Number of commits to fetch during checkout. Use `0` to fetch the full history and tags. Default: `1`.
+- `fail-build`: Set to `true` if the workflow should fail when vulnerabilities above the severity 
+cutoff are found.  Default: `false`.
+
+The generated Docker or Python SBOM is uploaded as a workflow artifact.
+
+The vulnerability results are available under **Security and quality** → **Code scanning**.
 
 # pre-commit
 
