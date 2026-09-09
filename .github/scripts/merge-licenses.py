@@ -4,8 +4,8 @@ THIRD_PARTY_LICENSES.json file.
 
 Python libaries created with pip-licenses (incl. LicenseText, URL etc.),
 all other systems (apt/dpkg, apk, rpm, npm, gem, cargo,
-go modules, ...) created with SBOM. Python-Einträge aus dem
-Syft-SBOM werden verworfen, um Duplikate zu vermeiden.
+go modules, ...) created with SBOM. Python entries from
+Syft SBOM are discarded to avoid duplicates.
 
 Usage:
     merge-licenses.py <pip-licenses.json> <syft.json> <output.json>
@@ -24,8 +24,8 @@ SOURCE_LABELS = {
     "java-archive": "java (jar)",
 }
 
-# Ökosysteme, die aus dem Syft-SBOM ignoriert werden, weil sie bereits
-# über pip-licenses abgedeckt sind.
+# Ecosystems that are ignored by the Syft SBOM because they are already
+# covered by pip-licenses.
 EXCLUDE_SYFT_TYPES = {"python"}
 
 
@@ -46,9 +46,9 @@ def load_pip_licenses(path):
 
 
 def extract_license(licenses):
-    """Syfts Lizenz-Feld hat je nach Version eine unterschiedliche Form:
-    entweder eine Liste von Strings, oder eine Liste von Objekten mit
-    einem 'value'-Feld. Beides wird hier abgefangen."""
+    """Depending on the version, Syft’s ‘licence’ field takes different forms:
+    either a list of strings, or a list of objects with a 'value' field.
+    Both are handled here."""
     if not licenses:
         return "UNKNOWN"
     values = []
