@@ -256,6 +256,30 @@ Provide exactly one of the following inputs:
 - `requirements`: Path to the requirements.txt file.
 - `pyproject`: Path to the pyproject.toml file.
 
+The workflow contains two jobs:
+1. `generate`: The generation of the THIRD_PARTY_LICENSES.json file
+2. `license-scan`: A scan of the file where warnings will be given when a
+license containg:
+  * "unknown": this should be fixed if possible, you can use following commands
+  to update the THIRD_PARTY_LICENSES.json
+    ```bash
+    # list all releases
+    gh release list
+    VERSION="0.0.0"
+    # view assets from release
+    gh release view ${VERSION}
+    # download assets
+    gh release download ${VERSION}
+    # TODO adjust THIRD_PARTY_LICENSES.json
+    # delete old THIRD_PARTY_LICENSES.json from release
+    gh release delete-asset ${VERSION} THIRD_PARTY_LICENSES.json
+    # upload adjusted THIRD_PARTY_LICENSES.json to release
+    gh release upload ${VERSION} THIRD_PARTY_LICENSES.json
+    ```
+  * OR "GLP/AGPL/LPGL", because this versions has to be checked of their
+  compability with the other licenses, see:
+    * [Wiki licenses overview](https://en.wikipedia.org/wiki/Comparison_of_free_and_open-source_software_licenses#Approvals)
+    * [compatibility-checker](https://joinup.ec.europa.eu/collection/eupl/solution/joinup-licensing-assistant/jla-compatibility-checker)
 
 # pre-commit
 
