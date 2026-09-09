@@ -116,7 +116,7 @@ jobs:
 
           # docker run --rm license-scan-image sh -c "
           docker run --rm license-scan-image -c "
-            pip install --quiet --upgrade pip pip-licenses &&
+            python -m pip install --upgrade pip pip-licenses &&
             pip-licenses --from=mixed --with-authors --with-urls --with-license-file --format=json --output-file=THIRD_PARTY_LICENSES.json
           " > pip-licenses.json
 

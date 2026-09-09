@@ -221,12 +221,40 @@ The calling job requires the following permissions:
 
 Optional inputs:
 - `fetch_depth`: Number of commits to fetch during checkout. Use `0` to fetch the full history and tags. Default: `1`.
-- `fail-build`: Set to `true` if the workflow should fail when vulnerabilities above the severity 
+- `fail-build`: Set to `true` if the workflow should fail when vulnerabilities above the severity
 cutoff are found.  Default: `false`.
 
 The generated Docker or Python SBOM is uploaded as a workflow artifact.
 
 The vulnerability results are available under **Security and quality** → **Code scanning**.
+
+## Generate Third-Party-License list by release
+
+The workflow generates a json file with third-party-licenses as release asset.
+The workflow can be used with a `Dockerfile`, a `requirements.txt` file, or a `pyproject.toml` file.
+
+```yaml
+name: Generate Third-Party Licenses
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  generate-third-party-licenses:
+    uses: mundialis/github-workflows/.github/workflows/third-party-licenses.yml@lincenses
+    with:
+      # dockerfile: docker/actinia-core-alpine/Dockerfile
+      requirements: requirements.txt
+      # pyproject: pyproject.toml
+```
+
+Provide exactly one of the following inputs:
+
+- `dockerfile`: Path to the Dockerfile.
+- `requirements`: Path to the requirements.txt file.
+- `pyproject`: Path to the pyproject.toml file.
+
 
 # pre-commit
 
