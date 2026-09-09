@@ -172,6 +172,7 @@ jobs:
           # Python-Skript: scans JSON, raise warning und creates summary table
           python3 - << 'PY'
           import json
+          import sys
           from pathlib import Path
 
           file_path = Path("THIRD_PARTY_LICENSES.json")
