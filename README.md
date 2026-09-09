@@ -242,7 +242,7 @@ on:
 
 jobs:
   generate-third-party-licenses:
-    uses: mundialis/github-workflows/.github/workflows/third-party-licenses.yml@lincenses
+    uses: mundialis/github-workflows/.github/workflows/third-party-licenses.yml@main
     with:
       # dockerfile: docker/actinia-core-alpine/Dockerfile
       requirements: requirements.txt
