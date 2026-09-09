@@ -233,6 +233,7 @@ The vulnerability results are available under **Security and quality** → **Cod
 The workflow generates a json file with third-party-licenses as release asset.
 The workflow can be used with a `Dockerfile`, a `requirements.txt` file, or a `pyproject.toml` file.
 
+You can use it e.g. like this:
 ```yaml
 name: Generate Third-Party Licenses
 
