@@ -126,112 +126,112 @@ jobs:
           image: license-scan-image
           format: syft-json
           output-file: sbom.json
-          upload-artifact: true
-          artifact-name: docker.syft.json
+          # upload-artifact: true
+          # artifact-name: docker.syft.json
 
-  #     - name: Merge licenses
-  #       if: inputs.dockerfile != ''
-  #       shell: bash
-  #       run: |
-  #         set -euo pipefail
-  #         wget -q https://raw.githubusercontent.com/mundialis/github-workflows/refs/heads/lincenses/.github/scripts/merge-licenses.py
-  #         python3 merge-licenses.py pip-licenses.json sbom.json THIRD_PARTY_LICENSES.json
+      - name: Merge licenses
+        if: inputs.dockerfile != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          wget -q https://raw.githubusercontent.com/mundialis/github-workflows/refs/heads/lincenses/.github/scripts/merge-licenses.py
+          python3 merge-licenses.py pip-licenses.json sbom.json THIRD_PARTY_LICENSES.json
 
-  #     - name: Validate Output
-  #       shell: bash
-  #       run: |
-  #         set -euo pipefail
-  #         if [ ! -s THIRD_PARTY_LICENSES.json ]; then
-  #           echo "::error::THIRD_PARTY_LICENSES.json not created or is empty."
-  #           exit 1
-  #         fi
-  #         python3 -c "import json; json.load(open('THIRD_PARTY_LICENSES.json'))"
+      - name: Validate Output
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ ! -s THIRD_PARTY_LICENSES.json ]; then
+            echo "::error::THIRD_PARTY_LICENSES.json not created or is empty."
+            exit 1
+          fi
+          python3 -c "import json; json.load(open('THIRD_PARTY_LICENSES.json'))"
 
-  #     - name: Upload THIRD_PARTY_LICENSES.json as artifact
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: third-party-license
-  #         path: THIRD_PARTY_LICENSES.json
+      - name: Upload THIRD_PARTY_LICENSES.json as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: third-party-license
+          path: THIRD_PARTY_LICENSES.json
 
-  #     - name: Upload as release asset
-  #       uses: actions/upload-release-asset@v1
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       with:
-  #         upload_url: ${{ github.event.release.upload_url }}
-  #         asset_path: ./THIRD_PARTY_LICENSES.json
-  #         asset_name: THIRD_PARTY_LICENSES.json
-  #         asset_content_type: application/json
+      - name: Upload as release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./THIRD_PARTY_LICENSES.json
+          asset_name: THIRD_PARTY_LICENSES.json
+          asset_content_type: application/json
 
-  # license-scan:
-  #   runs-on: ubuntu-latest
-  #   needs: generate
-  #   continue-on-error: true
-  #   steps:
-  #     - uses: actions/checkout@v4
+  license-scan:
+    runs-on: ubuntu-latest
+    needs: generate
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
 
-  #     - name: Download THIRD_PARTY_LICENSES.json
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: third-party-license
-  #         path: .
+      - name: Download THIRD_PARTY_LICENSES.json
+        uses: actions/download-artifact@v4
+        with:
+          name: third-party-license
+          path: .
 
-  #     - name: Scan THIRD_PARTY_LICENSES.json for UNKNOWN / GPL/AGPL/LGPL
-  #       run: |
-  #         set -e
+      - name: Scan THIRD_PARTY_LICENSES.json for UNKNOWN / GPL/AGPL/LGPL
+        run: |
+          set -e
 
-  #         FILE="THIRD_PARTY_LICENSES.json"
+          FILE="THIRD_PARTY_LICENSES.json"
 
-  #         if [ ! -f "$FILE" ]; then
-  #           echo "::error file=$FILE::File $FILE not found."
-  #           exit 1
-  #         fi
+          if [ ! -f "$FILE" ]; then
+            echo "::error file=$FILE::File $FILE not found."
+            exit 1
+          fi
 
-  #         # Python-Skript: scans JSON, raise warning und creates summary table
-  #         python3 - << 'PY'
-  #         import json
-  #         import sys
-  #         from pathlib import Path
+          # Python-Skript: scans JSON, raise warning und creates summary table
+          python3 - << 'PY'
+          import json
+          import sys
+          from pathlib import Path
 
-  #         file_path = Path("THIRD_PARTY_LICENSES.json")
-  #         data = json.loads(file_path.read_text(encoding="utf-8"))
+          file_path = Path("THIRD_PARTY_LICENSES.json")
+          data = json.loads(file_path.read_text(encoding="utf-8"))
 
-  #         # Expected format: List of objects with Name, Author, License, URL
-  #         entries = data if isinstance(data, list) else []
+          # Expected format: List of objects with Name, Author, License, URL
+          entries = data if isinstance(data, list) else []
 
-  #         problem_entries = []
+          problem_entries = []
 
-  #         for e in entries:
-  #             category = None
-  #             if any(["UNKNOWN" in val.upper() for val in e.values()]):
-  #                 category = "UNKNOWN"
-  #             license_val = e.get("License", "")
-  #             if license_val:
-  #                 lic = str(license_val).strip()
-  #                 is_gpl_like = any(
-  #                     x in lic.upper()
-  #                     for x in ["GPL", "AGPL", "LGPL"]
-  #                 )
-  #                 category = "GPL/AGPL/LGPL" if is_gpl_like else category
-  #             if category is not None:
-  #                 name = e.get("Name", "")
-  #                 author = e.get("Author", "")
-  #                 url = e.get("URL", "")
-  #                 license_file = e.get("LicenseFile", "")
-  #                 license_text = e.get("LicenseText", "")
+          for e in entries:
+              category = None
+              if any(["UNKNOWN" in val.upper() for val in e.values()]):
+                  category = "UNKNOWN"
+              license_val = e.get("License", "")
+              if license_val:
+                  lic = str(license_val).strip()
+                  is_gpl_like = any(
+                      x in lic.upper()
+                      for x in ["GPL", "AGPL", "LGPL"]
+                  )
+                  category = "GPL/AGPL/LGPL" if is_gpl_like else category
+              if category is not None:
+                  name = e.get("Name", "")
+                  author = e.get("Author", "")
+                  url = e.get("URL", "")
+                  license_file = e.get("LicenseFile", "")
+                  license_text = e.get("LicenseText", "")
 
-  #                 problem_entries.append({
-  #                     "Name": name,
-  #                     "Author": author,
-  #                     "License": lic,
-  #                     "URL": url,
-  #                     "Category": category,
-  #                 })
+                  problem_entries.append({
+                      "Name": name,
+                      "Author": author,
+                      "License": lic,
+                      "URL": url,
+                      "Category": category,
+                  })
 
-  #         # Warn-Annotationen for each entry
-  #         for e in problem_entries:
-  #             msg = f"{e['Category']}: {e['Name']} {e['Author']} ({e['License']})"
-  #             print(f"::warning title=License-Scan::{msg}")
-  #         if problem_entries:
-  #             sys.exit(1)
-  #         PY
+          # Warn-Annotationen for each entry
+          for e in problem_entries:
+              msg = f"{e['Category']}: {e['Name']} {e['Author']} ({e['License']})"
+              print(f"::warning title=License-Scan::{msg}")
+          if problem_entries:
+              sys.exit(1)
+          PY
