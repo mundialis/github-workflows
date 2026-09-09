@@ -1,0 +1,148 @@
+name: Generate Third-Party Licenses
+
+on:
+  workflow_call:
+    inputs:
+      dockerfile:
+        description: "Path to the Dockerfile"
+        required: false
+        type: string
+      requirements:
+        description: "Path to the requirements.txt file"
+        required: false
+        type: string
+      pyproject:
+        description: "Path to the pyproject.toml file"
+        required: false
+        type: string
+      python-version:
+        description: Python version for venv-Installation (only used for requirements/pyproject).
+        required: false
+        type: string
+        default: '3.12'
+      artifact-name:
+        description: Name for the artifacts, that contains THIRD_PARTY_LICENSES.json.
+        required: false
+        type: string
+        default: 'third-party-licenses'
+
+jobs:
+  generate:
+    name: Generate THIRD_PARTY_LICENSES.json
+    runs-on: ubuntu-latest
+    outputs:
+      artifact-name: ${{ steps.set-output.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate inputs
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          count=0
+          source_type=""
+          source_path=""
+
+          if [ -n "${{ inputs.dockerfile }}" ]; then
+            count=$((count + 1))
+            source_type="dockerfile"
+            source_path="${{ inputs.dockerfile }}"
+          fi
+          if [ -n "${{ inputs.requirements }}" ]; then
+            count=$((count + 1))
+            source_type="requirements"
+            source_path="${{ inputs.requirements }}"
+          fi
+          if [ -n "${{ inputs.pyproject }}" ]; then
+            count=$((count + 1))
+            source_type="pyproject"
+            source_path="${{ inputs.pyproject }}"
+          fi
+
+          if [ "$count" -eq 0 ]; then
+            echo "::error::One of the inputs 'dockerfile', 'requirements' or 'pyproject' has to be set."
+            exit 1
+          fi
+          if [ "$count" -gt 1 ]; then
+            echo "::error::Only one of the inputs 'dockerfile', 'requirements' or 'pyproject' may be set."
+            exit 1
+          fi
+          if [ ! -f "$source_path" ]; then
+            echo "::error::File '$source_path' not found."
+            exit 1
+          fi
+
+          echo "source-type=$source_type" >> "$GITHUB_OUTPUT"
+          echo "source-path=$source_path" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Python
+        if: inputs.source-type != 'dockerfile'
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      # --- Case 1: requirements.txt -------------------------------------
+      - name: Licenses from requirements.txt
+        if: inputs.requirements != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m venv .license-venv
+          source .license-venv/bin/activate
+          pip install --upgrade pip pip-licenses --quiet
+          pip install -r "${{ inputs.requirements }}"
+          pip-licenses --from=mixed --with-authors --with-urls --with-license-file --format=json --output-file=THIRD_PARTY_LICENSES.json
+
+      # --- Case 2: pyproject.toml ----------------------------------------
+      - name: Licenses from pyproject.toml
+        if: inputs.pyproject != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m venv .license-venv
+          source .license-venv/bin/activate
+          pip install --upgrade pip pip-licenses --quiet
+          project_dir=$(dirname "${{ inputs.pyproject }}")
+          pip install "$project_dir"
+          pip-licenses --from=mixed --with-authors --with-urls --with-license-file --format=json --output-file=THIRD_PARTY_LICENSES.json
+
+      # --- Case 3: Dockerfile ---------------------------------------------
+      # Build the image and executes pip-licenses inside the docker container
+      # TODO include als non-python dependencies
+      - name: Licenses from Dockerfile
+        if: inputs.dockerfile != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker build \
+            -t license-scan-image \
+            -f "${{ inputs.dockerfile }}" .
+
+          docker run --rm license-scan-image sh -c "
+            pip install --quiet --upgrade pip pip-licenses &&
+            pip-licenses ${{ inputs.pip-licenses-args }}
+          " > THIRD_PARTY_LICENSES.json
+
+      - name: Validate Output
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ ! -s THIRD_PARTY_LICENSES.json ]; then
+            echo "::error::THIRD_PARTY_LICENSES.json not created or is empty."
+            exit 1
+          fi
+          python3 -c "import json; json.load(open('THIRD_PARTY_LICENSES.json'))"
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: THIRD_PARTY_LICENSES.json
+          if-no-files-found: error
+
+      - name: Output setzen
+        id: set-output
+        run: echo "artifact-name=${{ inputs.artifact-name }}" >> "$GITHUB_OUTPUT"
