@@ -148,6 +148,7 @@ jobs:
   license-scan:
     runs-on: ubuntu-latest
     needs: generate
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
 
@@ -212,5 +213,6 @@ jobs:
           for e in problem_entries:
               msg = f"{e['Category']}: {e['Name']} {e['Author']} ({e['License']})"
               print(f"::warning title=License-Scan::{msg}")
-
+          if problem_entries:
+              sys.exit(1)
           PY
