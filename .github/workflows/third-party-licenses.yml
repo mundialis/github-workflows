@@ -113,11 +113,11 @@ jobs:
             -t license-scan-image \
             -f "${{ inputs.dockerfile }}" .
 
-          # docker run --rm license-scan-image sh -c "
-          docker run --entrypoint sh --rm license-scan-image -c "
+          docker run --entrypoint sh --rm -v "$PWD":/output license-scan-image -c "
             python -m pip install --upgrade pip pip-licenses &&
-            pip-licenses --from=mixed --with-authors --with-urls --with-license-file --format=json --output-file=THIRD_PARTY_LICENSES.json
-          " > pip-licenses.json
+            pip-licenses --from=mixed --with-authors --with-urls --with-license-file --format=json --output-file=/output/pip-licenses.json
+          "
+
 
       - name: Generate SBOM from Docker image
         if: inputs.dockerfile != ''
@@ -127,7 +127,7 @@ jobs:
           format: syft-json
           output-file: sbom.json
           # upload-artifact: true
-          # artifact-name: docker.syft.json
+          # artifact-name: sbom.json
 
       - name: Merge licenses
         if: inputs.dockerfile != ''
