@@ -114,9 +114,10 @@ jobs:
             -t license-scan-image \
             -f "${{ inputs.dockerfile }}" .
 
-          docker run --rm license-scan-image sh -c "
+          # docker run --rm license-scan-image sh -c "
+          docker run --rm license-scan-image -c "
             pip install --quiet --upgrade pip pip-licenses &&
-            pip-licenses ${{ inputs.pip-licenses-args }}
+            pip-licenses --from=mixed --with-authors --with-urls --with-license-file --format=json --output-file=THIRD_PARTY_LICENSES.json
           " > pip-licenses.json
 
       - name: Generate SBOM from Docker image
@@ -130,15 +131,10 @@ jobs:
 
       - name: Merge licenses
         if: inputs.dockerfile != ''
-      - name: Python- und Nicht-Python-Lizenzen zusammenführen
-        if: steps.validate.outputs.source-type == 'dockerfile' && inputs.include-non-python-licenses == true
         shell: bash
         run: |
           set -euo pipefail
           python3 .github/scripts/merge-licenses.py pip-licenses.json sbom.json THIRD_PARTY_LICENSES.json
-
-
-        # THIRD_PARTY_LICENSES.json
 
       - name: Validate Output
         shell: bash
