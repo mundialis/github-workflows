@@ -3,6 +3,8 @@ name: GRASS GIS addon manual
 on:
   workflow_call:
 
+permissions: {}
+
 jobs:
   build-grass-manual:
     name: build-grass-manual
