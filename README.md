@@ -256,6 +256,59 @@ The generated Docker or Python SBOM is uploaded as a workflow artifact.
 
 The vulnerability results are available under **Security and quality** → **Code scanning**.
 
+## Generate Third-Party-License list on release
+
+The workflow generates a json file with third-party-licenses as release asset.
+The workflow can be used with a `Dockerfile`, a `requirements.txt` file, or a `pyproject.toml` file.
+
+You can use it e.g. like this:
+```yaml
+name: Generate Third-Party Licenses
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  generate-third-party-licenses:
+    uses: mundialis/github-workflows/.github/workflows/third-party-licenses.yml@main
+    with:
+      # dockerfile: docker/actinia-core-alpine/Dockerfile
+      requirements: requirements.txt
+      # pyproject: pyproject.toml
+```
+
+Provide exactly one of the following inputs:
+
+- `dockerfile`: Path to the Dockerfile.
+- `requirements`: Path to the requirements.txt file.
+- `pyproject`: Path to the pyproject.toml file.
+
+The workflow contains two jobs:
+1. `generate`: The generation of the THIRD_PARTY_LICENSES.json file
+2. `license-scan`: A scan of the file where warnings will be given when a
+license contains:
+  * "unknown": this should be fixed if possible, you can use following commands
+  to update the THIRD_PARTY_LICENSES.json
+    ```bash
+    # list all releases
+    gh release list
+    VERSION="0.0.0"
+    # view assets from release
+    gh release view ${VERSION}
+    # download assets
+    gh release download ${VERSION}
+    # TODO adjust THIRD_PARTY_LICENSES.json
+    # delete old THIRD_PARTY_LICENSES.json from release
+    gh release delete-asset ${VERSION} THIRD_PARTY_LICENSES.json
+    # upload adjusted THIRD_PARTY_LICENSES.json to release
+    gh release upload ${VERSION} THIRD_PARTY_LICENSES.json
+    ```
+  * OR "GLP/AGPL/LPGL": these versions need to be checked for
+  compability with the other licenses, see:
+    * [Wiki licenses overview](https://en.wikipedia.org/wiki/Comparison_of_free_and_open-source_software_licenses#Approvals)
+    * [compatibility-checker](https://joinup.ec.europa.eu/collection/eupl/solution/joinup-licensing-assistant/jla-compatibility-checker)
+
 # pre-commit
 
 ## Python Linting
