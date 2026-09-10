@@ -15,11 +15,6 @@ on:
         description: "Path to the pyproject.toml file"
         required: false
         type: string
-      python-version:
-        description: Python version for venv-Installation (only used for requirements/pyproject).
-        required: false
-        type: string
-        default: '3.12'
 
 jobs:
   generate:
@@ -70,12 +65,6 @@ jobs:
 
           echo "source-type=$source_type" >> "$GITHUB_OUTPUT"
           echo "source-path=$source_path" >> "$GITHUB_OUTPUT"
-
-      - name: Set up Python
-        if: inputs.source-type != 'dockerfile'
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ inputs.python-version }}
 
       # --- Case 1: requirements.txt -------------------------------------
       - name: Licenses from requirements.txt
