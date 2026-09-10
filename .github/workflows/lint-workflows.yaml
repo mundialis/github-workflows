@@ -5,6 +5,8 @@ on:
       - main
       - 'releases/*'
 
+permissions: {}
+
 jobs:
   lint:
     runs-on: ubuntu-latest

@@ -10,6 +10,8 @@ on:
       PYPI_PASSWORD:
         required: true
 
+permissions: {}
+
 jobs:
   upload-python-package:
 

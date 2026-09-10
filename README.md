@@ -7,7 +7,7 @@ code quality.
 
 You can use it e.g. like this:
 
-```
+```yaml
 name: Linting and code quality check
 
 on:
@@ -42,7 +42,7 @@ To exclude files (files, folders or patterns) to be linted with super linter com
 (e.g. to exclude specific files from JSON linting via super-linter)
 add them to the `linting.yml` in the repo where the workflow is used, e.g.:
 
-```
+```yaml
 jobs:
   lint:
     uses: mundialis/github-workflows/.github/workflows/linting.yml@main
@@ -63,7 +63,7 @@ as explained in the [linting-config-example](https://github.com/mundialis/github
 For `ruff` and `black` linting, another workflow can propose suggestions to a pull request.
 For this the additional file `post-pr-reviews.yml` has to be created e.g. like this:
 
-```
+```yaml
 name: Post PR code suggestions
 
 on:
@@ -91,7 +91,7 @@ The workflow downloads the NC sample location if the workflow is configured usin
 
 You can use it e.g. like this:
 
-```
+```yaml
 name: Run tests for GRASS GIS addons
 on:
   push:
@@ -116,7 +116,7 @@ to GitHub Pages.
 
 You can use it e.g. like this:
 
-```
+```yaml
 on:
   push:
     branches: [ main ]
@@ -141,7 +141,7 @@ To use this workflow in the repo the **secrets** `TEST_PYPI_API_TOKEN` or
 
 For publishing on test PyPI use e.g.:
 
-```
+```yaml
 name: Upload Python Package to test PyPI
 
 on:
@@ -159,7 +159,7 @@ jobs:
 
 For publishing on PyPI use e.g.:
 
-```
+```yaml
 name: Upload Python Package to PyPI
 
 on:
@@ -172,6 +172,29 @@ jobs:
     secrets:
       PYPI_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
 ```
+## CodeQL Code Scan
+
+The CodeQL Code Scan scans the codebase for vulnerabilities. Supported
+languages are python, C and github workflow files.
+The vulnerability results are uploaded to GitHub Code Scanning at category "/language:${{matrix.language}}".
+
+You can use it e.g. like this:
+
+```yaml
+name: CodeQL Code Scan
+
+on:
+  push:
+    branches: [ "main" ]
+  schedule:
+    # Check every Monday at 04:36
+    - cron: "36 04 * * 1"
+
+jobs:
+  codeql:
+    uses: mundialis/github-workflows/.github/workflows/codeql.yml@main
+```
+
 ## SBOM Vulnerability Scan
 
 The SBOM vulnerability scan workflow generates a CycloneDX SBOM and scans
@@ -184,7 +207,7 @@ For Python projects, a virtual environment is created from either
 directly because this provides valid SARIF artifact locations for GitHub Code
 Scanning.
 
-The vulnerability results are uploaded to GitHub Code Scanning.
+The vulnerability results are uploaded to GitHub Code Scanning at category grype-python/grype-docker.
 
 You can use it e.g. like this:
 
@@ -194,6 +217,11 @@ name: SBOM Vulnerability Scan
 on:
   push:
     branches: [ "main" ]
+  schedule:
+    # Check every Monday at 04:36
+    - cron: "36 04 * * 1"
+  release:
+    types: [published]
 
 jobs:
   sbom-scan:
@@ -221,7 +249,7 @@ The calling job requires the following permissions:
 
 Optional inputs:
 - `fetch_depth`: Number of commits to fetch during checkout. Use `0` to fetch the full history and tags. Default: `1`.
-- `fail-build`: Set to `true` if the workflow should fail when vulnerabilities above the severity 
+- `fail-build`: Set to `true` if the workflow should fail when vulnerabilities above the severity
 cutoff are found.  Default: `false`.
 
 The generated Docker or Python SBOM is uploaded as a workflow artifact.
@@ -237,7 +265,7 @@ and `ruff` to check the code quality.
 
 You can use it by adding a `.pre-commit-config.yml` file to the repo containing e.g.:
 
-```
+```yaml
 repos:
 -   repo: https://github.com/mundialis/github-workflows
     rev: 1.3.1
@@ -301,7 +329,7 @@ Once in a while you can remove them manually to be in sync with the github-workf
 
 It is also recommended to add a `renovate.json` config with pre-commit enabled to your repository:
 
-```
+```json
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
@@ -317,13 +345,13 @@ It is also recommended to add a `renovate.json` config with pre-commit enabled t
 
 To develop the pre-commit hook locally, cd into a code repository where you want to use it and run
 
-```
+```bash
 pre-commit try-repo ../../github-workflows linting -a --verbose
 ```
 
 If you want to start a container to debug the executed file, check last build docker image and run
 
-```
+```bash
 docker run --rm -it --entrypoint sh -v $PWD:/src:rw,Z pre-commit-33a9cd78e77e8963da808aa71baf0b54
 ```
 
@@ -337,7 +365,7 @@ Requirements:
 - `pip install toml-union`
 - have a local checkout of this repo at `~/repos/github-workflows` (or adjust below)
 
-```
+```bash
 flake8() {
     if [ -z "$1" ]
     then
@@ -386,7 +414,7 @@ lint() {
 ```
 
 Example usage:
-```
+```bash
 17:49 $ lint
 Which Tool?
 1) flake8

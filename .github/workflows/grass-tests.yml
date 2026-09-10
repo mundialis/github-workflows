@@ -8,6 +8,8 @@ on:
         type: string
         default: ''
 
+permissions: {}
+
 jobs:
   grass-addon-tests:
     name: grass addon tests

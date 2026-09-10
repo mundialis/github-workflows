@@ -6,6 +6,7 @@ on:
   workflow_call:
 
 permissions: {}
+
 jobs:
   post-suggestions:
     runs-on: ubuntu-latest
