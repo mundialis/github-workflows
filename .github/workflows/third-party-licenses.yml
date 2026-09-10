@@ -89,9 +89,9 @@ jobs:
           pip install --upgrade pip pip-licenses --quiet
           if grep -qi '^gdal' "${{ inputs.requirements }}"; then
             echo "GDAL==$(gdal-config --version).*" > /tmp/constraints.txt
-            .venv/bin/pip install -r "${{ inputs.requirements }}" -c /tmp/constraints.txt
+            pip install -r "${{ inputs.requirements }}" -c /tmp/constraints.txt
           else
-            .venv/bin/pip install -r "${{ inputs.requirements }}"
+            pip install -r "${{ inputs.requirements }}"
           fi
           pip-licenses --from=mixed --with-authors --with-urls --with-license-file --format=json --output-file=THIRD_PARTY_LICENSES.json
 
