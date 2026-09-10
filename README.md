@@ -254,7 +254,9 @@ Optional inputs:
 - `fetch_depth`: Number of commits to fetch during checkout. Use `0` to fetch the full history and tags. Default: `1`.
 - `fail-build`: Set to `true` if the workflow should fail when vulnerabilities above the severity
 cutoff are found.  Default: `false`.
-
+- `additional-packages`: a list with additional packages can be installed e.g.
+for gdal see example. In the requirements.txt the gdal version not not be set
+to a fixed version, because the system version of GDAL is used.
 The generated Docker or Python SBOM is uploaded as a workflow artifact.
 
 The vulnerability results are available under **Security and quality** → **Code scanning**.
@@ -287,6 +289,10 @@ Provide exactly one of the following inputs:
 - `dockerfile`: Path to the Dockerfile.
 - `requirements`: Path to the requirements.txt file.
 - `pyproject`: Path to the pyproject.toml file.
+
+Additional packages can be installed e.g. for gdal see example. In the
+requirements.txt the gdal version not not be set to a fixed version, because
+the system version of GDAL is used.
 
 The workflow contains two jobs:
 1. `generate`: The generation of the THIRD_PARTY_LICENSES.json file
