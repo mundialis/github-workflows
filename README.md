@@ -242,6 +242,8 @@ Provide exactly one of the following inputs:
 - `requirements`: Path to the requirements.txt file.
 - `pyproject`: Path to the pyproject.toml file.
 
+If none exists, an empty requirements.txt needs to be created.
+
 The calling job requires the following permissions:
 
 - `contents: read` to check out the repository.
