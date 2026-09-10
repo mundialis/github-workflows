@@ -15,6 +15,11 @@ on:
         description: "Path to the pyproject.toml file"
         required: false
         type: string
+      additional-packages:
+        description: "Space-separated list of system packages to install before creating the Python environment (optional)"
+        required: false
+        default: ""
+        type: string
 
 jobs:
   generate:
@@ -66,6 +71,13 @@ jobs:
           echo "source-type=$source_type" >> "$GITHUB_OUTPUT"
           echo "source-path=$source_path" >> "$GITHUB_OUTPUT"
 
+      - name: Install additional system packages
+        if: (inputs.requirements != '' || inputs.pyproject != '') && inputs.additional-packages != ''
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ${{ inputs.additional-packages }}
+
+
       # --- Case 1: requirements.txt -------------------------------------
       - name: Licenses from requirements.txt
         if: inputs.requirements != ''
@@ -75,7 +87,12 @@ jobs:
           python -m venv .license-venv
           source .license-venv/bin/activate
           pip install --upgrade pip pip-licenses --quiet
-          pip install -r "${{ inputs.requirements }}"
+          if grep -qi '^gdal' "${{ inputs.requirements }}"; then
+            echo "GDAL==$(gdal-config --version).*" > /tmp/constraints.txt
+            .venv/bin/pip install -r "${{ inputs.requirements }}" -c /tmp/constraints.txt
+          else
+            .venv/bin/pip install -r "${{ inputs.requirements }}"
+          fi
           pip-licenses --from=mixed --with-authors --with-urls --with-license-file --format=json --output-file=THIRD_PARTY_LICENSES.json
 
       # --- Case 2: pyproject.toml ----------------------------------------

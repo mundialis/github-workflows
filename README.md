@@ -279,6 +279,7 @@ jobs:
       # dockerfile: docker/actinia-core-alpine/Dockerfile
       requirements: requirements.txt
       # pyproject: pyproject.toml
+      additional-packages: "libgdal-dev gdal-bin build-essential"
 ```
 
 Provide exactly one of the following inputs:
