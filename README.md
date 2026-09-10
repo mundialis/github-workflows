@@ -24,6 +24,12 @@ jobs:
       pylint-version: '2.17.4'
       VALIDATE_JAVASCRIPT_STANDARD: false
       BASH_SEVERITY: 'warning'
+    # the workflow requires permissions that need to be granted by the parent job:
+    permissions:
+      contents: read
+      packages: read
+      # To report GitHub Actions status checks
+      statuses: write
 
 ```
 
@@ -75,6 +81,9 @@ on:
 jobs:
   post-pr-reviews:
     uses: mundialis/github-workflows/.github/workflows/post-pr-reviews.yml@main
+    # the workflow requires permissions that need to be granted by the parent job:
+    permissions:
+      pull-requests: write
 ```
 
 It needs to be in the `main` branch to become active.
@@ -100,6 +109,9 @@ on:
     # The branches below must be a subset of the branches above
     branches: [ main ]
 
+# the workflow does not require permissions, but to avoid a code security warning this should be explicitly defined:
+permissions: {}
+
 jobs:
   tests:
     uses: mundialis/github-workflows/.github/workflows/grass-tests.yml@main
@@ -124,6 +136,11 @@ on:
 jobs:
   grass-manual:
     uses: mundialis/github-workflows/.github/workflows/grass-manual.yml@main
+    # the workflow requires permissions that need to be granted by the parent job:
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
 ```
 
 Attention: you have to activate GitHub Pages for the repository (see
@@ -148,6 +165,9 @@ on:
   release:
     types: [published]
 
+# the workflow does not require permissions, but to avoid a code security warning this should be explicitly defined:
+permissions: {}
+
 jobs:
   publish-python:
     uses: mundialis/github-workflows/.github/workflows/python-publish.yml@main
@@ -165,6 +185,9 @@ name: Upload Python Package to PyPI
 on:
   release:
     types: [published]
+
+# the workflow does not require permissions, but to avoid a code security warning this should be explicitly defined:
+permissions: {}
 
 jobs:
   publish-python:
@@ -193,6 +216,18 @@ on:
 jobs:
   codeql:
     uses: mundialis/github-workflows/.github/workflows/codeql.yml@main
+    # the workflow requires permissions that need to be granted by the parent job:
+    permissions:
+      # required for all workflows
+      security-events: write
+
+      # required to fetch internal or private CodeQL packs
+      packages: read
+
+      # only required for workflows in private repositories
+      actions: read
+      contents: read
+
 ```
 
 ## SBOM Vulnerability Scan
@@ -270,6 +305,9 @@ name: Generate Third-Party Licenses
 on:
   release:
     types: [published]
+
+# the workflow does not require permissions, but to avoid a code security warning this should be explicitly defined:
+permissions: {}
 
 jobs:
   generate-third-party-licenses:
