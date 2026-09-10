@@ -2,10 +2,10 @@
 """Merge pip-licenses output with a SBOM into one
 THIRD_PARTY_LICENSES.json file.
 
-Python libaries created with pip-licenses (incl. LicenseText, URL etc.),
-all other systems (apt/dpkg, apk, rpm, npm, gem, cargo,
-go modules, ...) created with SBOM. Python entries from
-Syft SBOM are discarded to avoid duplicates.
+Python libary licences created with pip-licenses (incl. LicenseText, URL etc.),
+all other system licences (apt/dpkg, apk, rpm, npm, gem, cargo,
+go modules, ...) created via Syft SBOM. Python entries from
+SBOM are discarded to avoid duplicates.
 
 Usage:
     merge-licenses.py <pip-licenses.json> <syft.json> <output.json>

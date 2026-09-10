@@ -228,7 +228,7 @@ The generated Docker or Python SBOM is uploaded as a workflow artifact.
 
 The vulnerability results are available under **Security and quality** → **Code scanning**.
 
-## Generate Third-Party-License list by release
+## Generate Third-Party-License list on release
 
 The workflow generates a json file with third-party-licenses as release asset.
 The workflow can be used with a `Dockerfile`, a `requirements.txt` file, or a `pyproject.toml` file.
@@ -259,7 +259,7 @@ Provide exactly one of the following inputs:
 The workflow contains two jobs:
 1. `generate`: The generation of the THIRD_PARTY_LICENSES.json file
 2. `license-scan`: A scan of the file where warnings will be given when a
-license containg:
+license contains:
   * "unknown": this should be fixed if possible, you can use following commands
   to update the THIRD_PARTY_LICENSES.json
     ```bash
@@ -276,7 +276,7 @@ license containg:
     # upload adjusted THIRD_PARTY_LICENSES.json to release
     gh release upload ${VERSION} THIRD_PARTY_LICENSES.json
     ```
-  * OR "GLP/AGPL/LPGL", because this versions has to be checked of their
+  * OR "GLP/AGPL/LPGL": these versions need to be checked for
   compability with the other licenses, see:
     * [Wiki licenses overview](https://en.wikipedia.org/wiki/Comparison_of_free_and_open-source_software_licenses#Approvals)
     * [compatibility-checker](https://joinup.ec.europa.eu/collection/eupl/solution/joinup-licensing-assistant/jla-compatibility-checker)
