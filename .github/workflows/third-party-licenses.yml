@@ -124,7 +124,7 @@ jobs:
           "
       - name: Generate SBOM from Docker image
         if: inputs.dockerfile != ''
-        uses: anchore/sbom-action@v1
+        uses: anchore/sbom-action@v0.24
         with:
           image: license-scan-image
           format: syft-json
