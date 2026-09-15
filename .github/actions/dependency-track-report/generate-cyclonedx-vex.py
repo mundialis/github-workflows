@@ -11,6 +11,7 @@ def main():
     parser.add_argument("--project-uuid", required=True)
     parser.add_argument("--project-name", required=True)
     parser.add_argument("--project-version", required=True)
+    parser.add_argument("--project-type", required=True)
 
     args = parser.parse_args()
 
@@ -29,18 +30,22 @@ def main():
         analysis = finding.get("analysis", {})
 
         # Do not overwrite an existing manual or previous analysis state.
-        if analysis.get("state"):
+        if analysis.get("state") or analysis.get("isSuppressed"):
             continue
 
         component_uuid = component["uuid"]
 
-        components[component_uuid] = {
+        component_data = {
             "type": "library",
             "bom-ref": component_uuid,
             "name": component["name"],
             "version": component["version"],
-            "purl": component.get("purl"),
         }
+
+        if component.get("purl"):
+            component_data["purl"] = component["purl"]
+
+        components[component_uuid] = component_data
 
         vulnerabilities.append({
             "id": vulnerability["vulnId"],
@@ -56,7 +61,11 @@ def main():
                 }
             ],
         })
-        
+
+    if not vulnerabilities:
+        output_path.unlink(missing_ok=True)
+        return
+
     vex = {
         "bomFormat": "CycloneDX",
         "specVersion": "1.5",
@@ -64,7 +73,7 @@ def main():
         "version": 1,
         "metadata": {
             "component": {
-                "type": "container",
+                "type": args.project_type,
                 "bom-ref": args.project_uuid,
                 "name": args.project_name,
                 "version": args.project_version,

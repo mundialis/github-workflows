@@ -22,6 +22,10 @@ inputs:
     description: Dependency-Track project version
     required: true
 
+  project-type:
+    description: CycloneDX component type for the project
+    required: true
+
 runs:
   using: composite
   steps:
@@ -128,6 +132,7 @@ runs:
         fi
 
     - name: Generate CycloneDX VEX
+      id: generate-vex
       shell: bash
       run: |
         python "$GITHUB_ACTION_PATH/generate-cyclonedx-vex.py" \
@@ -135,9 +140,18 @@ runs:
           --output /tmp/dtrack-vex.json \
           --project-uuid "$DTRACK_PROJECT_UUID" \
           --project-name "${{ inputs.project-name }}" \
-          --project-version "${{ inputs.project-version }}"
+          --project-version "${{ inputs.project-version }}" \
+          --project-type "${{ inputs.project-type }}"
+
+        if [ -f /tmp/dtrack-vex.json ]; then
+          echo "has-vex=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "has-vex=false" >> "$GITHUB_OUTPUT"
+          echo "No findings require a new VEX analysis."
+        fi
 
     - name: Upload CycloneDX VEX to Dependency-Track
+      if: steps.generate-vex.outputs.has-vex == 'true'
       shell: bash
       env:
         DTRACK_URL: ${{ inputs.dependency-track-url }}
