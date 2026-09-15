@@ -26,6 +26,11 @@ def main():
     for finding in findings:
         component = finding["component"]
         vulnerability = finding["vulnerability"]
+        analysis = finding.get("analysis", {})
+
+        # Do not overwrite an existing manual or previous analysis state.
+        if analysis.get("state"):
+            continue
 
         component_uuid = component["uuid"]
 
@@ -51,7 +56,7 @@ def main():
                 }
             ],
         })
-
+        
     vex = {
         "bomFormat": "CycloneDX",
         "specVersion": "1.5",
@@ -77,4 +82,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
