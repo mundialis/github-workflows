@@ -174,7 +174,7 @@ def set_notification_property(
         raise SystemExit(
             "Could not reach Dependency-Track."
         ) from error
-    
+
 
 def set_last_notification_time(project_uuid, timestamp_ms):
     properties = get_project_properties(project_uuid)
@@ -327,6 +327,7 @@ def get_notification_status(project_uuid, findings):
         "state_change_count": state_change_count,
         "latest_event_timestamp": latest_event_timestamp,
     }
+
 
 if __name__ == "__main__":
     validate_config()
