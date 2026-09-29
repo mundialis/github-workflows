@@ -13,13 +13,16 @@ DTRACK_URL = os.environ.get(
 )
 
 DTRACK_API_KEY = os.environ.get("DTRACK_API_KEY")
-NOTIFICATION_PROPERTY_GROUP = "mundialis"
 NOTIFICATION_PROPERTY_NAME = "last-csaf-notification-time"
 ANALYSIS_COMMENT_PREFIX = "Analysis: "
 ANALYSIS_TRANSITION_SEPARATOR = " → "
 INITIAL_ANALYSIS_STATE = "NOT_SET"
 TRIAGE_ANALYSIS_STATE = "IN_TRIAGE"
 CYCLONEDX_VEX_COMMENTER = "CycloneDX VEX"
+
+NOTIFICATION_PROPERTY_GROUP = os.environ.get(
+    "NOTIFICATION_PROPERTY_GROUP"
+)
 
 DTRACK_FINDINGS_FILE = os.environ.get(
     "DTRACK_FINDINGS_FILE",
@@ -334,6 +337,9 @@ if __name__ == "__main__":
 
     if not DTRACK_PROJECT_UUID:
         raise SystemExit("DTRACK_PROJECT_UUID is not set")
+
+    if not NOTIFICATION_PROPERTY_GROUP:
+        raise SystemExit("NOTIFICATION_PROPERTY_GROUP is not set")
 
     if NOTIFICATION_ACTION == "status":
         with open(DTRACK_FINDINGS_FILE) as file:

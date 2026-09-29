@@ -24,15 +24,13 @@ STATE_MAP = {
 }
 
 CSAF_SELF_URL = os.environ.get("CSAF_SELF_URL")
-CSAF_PUBLISHER_NAME = os.environ.get(
-    "CSAF_PUBLISHER_NAME",
-    "mundialis"
-)
+
+CSAF_PUBLISHER_NAME = os.environ.get("CSAF_PUBLISHER_NAME")
 
 CSAF_PUBLISHER_NAMESPACE = os.environ.get(
-    "CSAF_PUBLISHER_NAMESPACE",
-    "https://mundialis.de"
+    "CSAF_PUBLISHER_NAMESPACE"
 )
+
 CSAF_DOCUMENT_ID = os.environ.get("CSAF_DOCUMENT_ID")
 
 
@@ -292,9 +290,14 @@ def build_vulnerability_entry(finding, analysis):
     return entry
 
 def main():
+    if not CSAF_PUBLISHER_NAME:
+        raise SystemExit("CSAF_PUBLISHER_NAME is not set")
+
+    if not CSAF_PUBLISHER_NAMESPACE:
+        raise SystemExit("CSAF_PUBLISHER_NAMESPACE is not set")
 
     validate_config()
-        
+
     with INPUT.open() as f:
         findings = json.load(f)
 
@@ -348,6 +351,7 @@ def main():
         json.dump(document, f, indent=2)
 
     print(f"Generated {OUTPUT}")
+
 
 if __name__ == "__main__":
     main()

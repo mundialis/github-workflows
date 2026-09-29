@@ -41,6 +41,18 @@ inputs:
     required: false
     default: ""
 
+  notification-property-group:
+    description: "Dependency-Track project property group used for notification state"
+    required: true
+
+  csaf-publisher-name:
+    description: "CSAF publisher name"
+    required: true
+
+  csaf-publisher-namespace:
+    description: "CSAF publisher namespace"
+    required: true
+
 runs:
   using: composite
   steps:
@@ -161,7 +173,7 @@ runs:
 
         echo "Dependency-Track analysis did not complete within the expected time."
         exit 1
-        
+
     - name: Download Dependency-Track findings
       shell: bash
       env:
@@ -190,6 +202,7 @@ runs:
       env:
         DTRACK_URL: ${{ inputs.dependency-track-url }}
         DTRACK_API_KEY: ${{ inputs.api-key }}
+        NOTIFICATION_PROPERTY_GROUP: ${{ inputs.notification-property-group }}
         NOTIFICATION_ACTION: initialize
       run: |
         python3 "$GITHUB_ACTION_PATH/dependency_track.py"
@@ -233,7 +246,7 @@ runs:
           echo "Dependency-Track VEX upload failed with HTTP $http_code."
           exit 1
         fi
-    
+
     - name: Generate CSAF VEX
       id: generate-csaf
       shell: bash
@@ -242,8 +255,8 @@ runs:
         DTRACK_API_KEY: ${{ inputs.api-key }}
         DTRACK_FINDINGS_FILE: /tmp/dtrack-findings.json
         CSAF_OUTPUT: /tmp/csaf-vex.json
-        CSAF_PUBLISHER_NAME: mundialis
-        CSAF_PUBLISHER_NAMESPACE: https://mundialis.de
+        CSAF_PUBLISHER_NAME: ${{ inputs.csaf-publisher-name }}
+        CSAF_PUBLISHER_NAMESPACE: ${{ inputs.csaf-publisher-namespace }}
       run: |
         python3 "$GITHUB_ACTION_PATH/generate_csaf.py"
 
@@ -336,6 +349,7 @@ runs:
       env:
         DTRACK_URL: ${{ inputs.dependency-track-url }}
         DTRACK_API_KEY: ${{ inputs.api-key }}
+        NOTIFICATION_PROPERTY_GROUP: ${{ inputs.notification-property-group }}
         DTRACK_FINDINGS_FILE: /tmp/dtrack-findings.json
       run: |
         status=$(python3 "$GITHUB_ACTION_PATH/dependency_track.py")
@@ -373,6 +387,7 @@ runs:
       env:
         DTRACK_URL: ${{ inputs.dependency-track-url }}
         DTRACK_API_KEY: ${{ inputs.api-key }}
+        NOTIFICATION_PROPERTY_GROUP: ${{ inputs.notification-property-group }}
         NOTIFICATION_ACTION: update
         LATEST_EVENT_TIMESTAMP: ${{ steps.email-notification.outputs.latest-event-timestamp }}
       run: |

@@ -303,7 +303,8 @@ jobs:
       dependency-track-url: ${{ vars.DEPENDENCY_TRACK_API_URL }}
       dependency-track-project-name: ${{ github.event.repository.name }}-container
       dependency-track-project-version: ${{ github.ref_name }}
-
+      csaf-publisher-name: ${{ vars.CSAF_PUBLISHER_NAME }}
+      csaf-publisher-namespace: ${{ vars.CSAF_PUBLISHER_NAMESPACE }}
       email-notification: true
       email-address: ${{ vars.CYBERSECURITY_EMAIL }}
 
@@ -311,46 +312,21 @@ jobs:
       dependency-track-api-key: ${{ secrets.DEPENDENCY_TRACK_API_KEY }}
       smtp-password: ${{ secrets.CYBERSECURITY_EMAIL_APP_PASSWORD }}
 ```
-For a Python project using `pyproject.toml`:
+For a Python project using `pyproject.toml`, the `with` section can look like this:
+
 ```yaml
-name: Python SBOM Vulnerability Scan
+with:
+  pyproject: pyproject.toml
+  fail-build: false
 
-on:
-  push:
-    branches: [ "main" ]
-
-  schedule:
-    # Check every Monday at 04:36
-    - cron: "36 04 * * 1"
-
-  release:
-    types: [published]
-
-  workflow_dispatch:
-
-jobs:
-  sbom-scan:
-    permissions:
-      contents: read
-      security-events: write
-
-    uses: mundialis/github-workflows/.github/workflows/sbom-vulnerability-scan.yml@main
-
-    with:
-      pyproject: pyproject.toml
-      fail-build: false
-
-      dependency-track: true
-      dependency-track-url: ${{ vars.DEPENDENCY_TRACK_API_URL }}
-      dependency-track-project-name: ${{ github.event.repository.name }}-application
-      dependency-track-project-version: ${{ github.ref_name }}
-
-      email-notification: true
-      email-address: ${{ vars.CYBERSECURITY_EMAIL }}
-
-    secrets:
-      dependency-track-api-key: ${{ secrets.DEPENDENCY_TRACK_API_KEY }}
-      smtp-password: ${{ secrets.CYBERSECURITY_EMAIL_APP_PASSWORD }}
+  dependency-track: true
+  dependency-track-url: ${{ vars.DEPENDENCY_TRACK_API_URL }}
+  dependency-track-project-name: ${{ github.event.repository.name }}-application
+  dependency-track-project-version: ${{ github.ref_name }}
+  csaf-publisher-name: ${{ vars.CSAF_PUBLISHER_NAME }}
+  csaf-publisher-namespace: ${{ vars.CSAF_PUBLISHER_NAMESPACE }}
+  email-notification: true
+  email-address: ${{ vars.CYBERSECURITY_EMAIL }}
 ```
 Provide exactly one of the following inputs:
 
@@ -377,19 +353,21 @@ Optional inputs:
 - `dependency-track`: Enable Dependency-Track integration. Default: `false`.
 - `dependency-track-url`: Dependency-Track base URL. In mundialis and actinia-org
   repositories, use the organization variable `DEPENDENCY_TRACK_API_URL`.
-
 - `dependency-track-project-name`: Project name used in Dependency-Track.
   The recommended convention is `${{ github.event.repository.name }}-container`
   for Docker scans and `${{ github.event.repository.name }}-application`
   for Python scans.
-
+- `csaf-publisher-name`: Name of the CSAF publisher. Required when
+  `dependency-track` is enabled. In mundialis and actinia-org repositories,
+  use the organization variable `CSAF_PUBLISHER_NAME`.
+- `csaf-publisher-namespace`: Namespace URI of the CSAF publisher. Required when
+  `dependency-track` is enabled. In mundialis and actinia-org repositories,
+  use the organization variable `CSAF_PUBLISHER_NAMESPACE`.
 - `dependency-track-project-version`: Project version used in Dependency-Track.
   The recommended value is `${{ github.ref_name }}` so the project version
   follows the current branch, tag, or release reference.
-
 - `email-notification`: Enable CSAF email notifications. Requires
   `dependency-track` to be enabled. Default: `false`.
-
 - `email-address`: Email address used as the SMTP account, sender, and
   notification recipient. In mundialis and actinia-org repositories, use
   the organization variable `CYBERSECURITY_EMAIL`.
