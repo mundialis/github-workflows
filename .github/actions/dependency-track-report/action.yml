@@ -1,5 +1,5 @@
 name: Dependency-Track Report
-description: Upload an SBOM to Dependency-Track, generate CycloneDX VEX, and apply it
+description: Upload an SBOM to Dependency-Track, manage CycloneDX VEX, and generate and validate CSAF VEX
 
 inputs:
   sbom-file:
@@ -170,3 +170,107 @@ runs:
           echo "Dependency-Track VEX upload failed with HTTP $http_code."
           exit 1
         fi
+    
+    - name: Generate CSAF VEX
+      id: generate-csaf
+      shell: bash
+      env:
+        DTRACK_URL: ${{ inputs.dependency-track-url }}
+        DTRACK_API_KEY: ${{ inputs.api-key }}
+        DTRACK_FINDINGS_FILE: /tmp/dtrack-findings.json
+        SBOM_PATH: ${{ inputs.sbom-file }}
+        CSAF_OUTPUT: /tmp/csaf-vex.json
+        CSAF_PUBLISHER_NAME: mundialis
+        CSAF_PUBLISHER_NAMESPACE: https://mundialis.de
+      run: |
+        finding_count=$(jq 'length' /tmp/dtrack-findings.json)
+
+        if [ "$finding_count" -eq 0 ]; then
+          echo "No findings were reported by Dependency-Track. CSAF VEX generation is not required."
+          echo "has-csaf=false" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        python "$GITHUB_ACTION_PATH/generate_csaf.py"
+
+        if [ -s /tmp/csaf-vex.json ]; then
+          echo "has-csaf=true" >> "$GITHUB_OUTPUT"
+          echo "CSAF VEX generated successfully."
+        else
+          echo "has-csaf=false" >> "$GITHUB_OUTPUT"
+          echo "Dependency-Track reported findings, but none had an analysis state that could be included in the CSAF VEX."
+        fi
+
+    - name: Set up Node.js for CSAF validator
+      if: steps.generate-csaf.outputs.has-csaf == 'true'
+      uses: actions/setup-node@v7
+      with:
+        node-version: '24'
+
+    - name: Install Hunspell for CSAF validator
+      if: steps.generate-csaf.outputs.has-csaf == 'true'
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y hunspell hunspell-en-us
+
+        sudo ln -sf /usr/share/hunspell/en_US.aff /usr/share/hunspell/en.aff
+        sudo ln -sf /usr/share/hunspell/en_US.dic /usr/share/hunspell/en.dic
+
+    - name: Start CSAF validator
+      if: steps.generate-csaf.outputs.has-csaf == 'true'
+      shell: bash
+      run: |
+        npx --yes @secvisogram/csaf-validator-service \
+          > /tmp/csaf-validator.log 2>&1 &
+
+        echo $! > /tmp/csaf-validator.pid
+
+        for attempt in {1..30}; do
+          if curl -sf http://localhost:8082/docs > /dev/null 2>&1; then
+            exit 0
+          fi
+
+          sleep 1
+        done
+
+        echo "CSAF validator did not start."
+        cat /tmp/csaf-validator.log
+        exit 1
+
+    - name: Validate CSAF VEX
+      if: steps.generate-csaf.outputs.has-csaf == 'true'
+      shell: bash
+      run: |
+        http_code=$(jq -n \
+          --slurpfile doc /tmp/csaf-vex.json \
+          '{
+            document: $doc[0],
+            tests: [
+              {
+                name: "full",
+                type: "preset"
+              }
+            ]
+          }' \
+        | curl -sS -X POST \
+            "http://localhost:8082/api/v1/validate" \
+            -H "Content-Type: application/json" \
+            --data-binary @- \
+            -o /tmp/csaf-validation-result.json \
+            -w "%{http_code}")
+
+        if [ "$http_code" != "200" ]; then
+          echo "CSAF Validator service request failed with HTTP code $http_code."
+          echo "Validator error:"
+          jq -r '.message // .error // "Unknown validator error"' \
+            /tmp/csaf-validation-result.json
+          exit 1
+        fi
+
+        if [ "$(jq -r '.isValid' /tmp/csaf-validation-result.json)" != "true" ]; then
+          echo "CSAF VEX validation failed."
+          exit 1
+        fi
+
+        echo "CSAF VEX validation succeeded."
