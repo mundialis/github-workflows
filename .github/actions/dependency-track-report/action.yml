@@ -26,9 +26,41 @@ inputs:
     description: CycloneDX component type for the project
     required: true
 
+  email-notification:
+    description: "Enable CSAF email notifications"
+    required: false
+    default: "false"
+
+  email-address:
+    description: "Email address used for CSAF notifications"
+    required: false
+    default: ""
+
+  smtp-password:
+    description: "SMTP app password"
+    required: false
+    default: ""
+
 runs:
   using: composite
   steps:
+    - name: Validate email notification inputs
+      if: inputs.email-notification == 'true'
+      shell: bash
+      env:
+        EMAIL_ADDRESS: ${{ inputs.email-address }}
+        SMTP_PASSWORD: ${{ inputs.smtp-password }}
+      run: |
+        if [ -z "$EMAIL_ADDRESS" ]; then
+          echo "email-address is required when email notifications are enabled."
+          exit 1
+        fi
+
+        if [ -z "$SMTP_PASSWORD" ]; then
+          echo "smtp-password is required when email notifications are enabled."
+          exit 1
+        fi
+
     - name: Upload SBOM to Dependency-Track
       shell: bash
       env:
@@ -71,16 +103,25 @@ runs:
         DTRACK_PROJECT_NAME: ${{ inputs.project-name }}
         DTRACK_PROJECT_VERSION: ${{ inputs.project-version }}
       run: |
-        project_uuid=$(curl -sS \
+        http_code=$(curl -sS \
+          -o /tmp/dtrack-project-response.json \
+          -w "%{http_code}" \
           -H "X-Api-Key: $DTRACK_API_KEY" \
           --get \
           --data-urlencode "name=$DTRACK_PROJECT_NAME" \
           --data-urlencode "version=$DTRACK_PROJECT_VERSION" \
-          "${DTRACK_URL%/}/api/v1/project/lookup" \
-          | jq -r '.uuid // empty')
+          "${DTRACK_URL%/}/api/v1/project/lookup")
+
+        if [ "$http_code" != "200" ]; then
+          echo "Dependency-Track project lookup failed with HTTP $http_code."
+          exit 1
+        fi
+
+        project_uuid=$(jq -r '.uuid // empty' \
+          /tmp/dtrack-project-response.json)
 
         if [ -z "$project_uuid" ]; then
-          echo "Dependency-Track project could not be found."
+          echo "Dependency-Track project UUID was not returned."
           exit 1
         fi
 
@@ -96,24 +137,31 @@ runs:
         attempt=1
 
         while [ "$attempt" -le "$max_attempts" ]; do
-          processing=$(curl -sS \
+          http_code=$(curl -sS \
+            -o /tmp/dtrack-event-response.json \
+            -w "%{http_code}" \
             -H "X-Api-Key: $DTRACK_API_KEY" \
-            "${DTRACK_URL%/}/api/v1/event/token/$DTRACK_BOM_TOKEN" \
-            | jq -r '.processing // false')
+            "${DTRACK_URL%/}/api/v1/event/token/$DTRACK_BOM_TOKEN")
+
+          if [ "$http_code" != "200" ]; then
+            echo "Dependency-Track processing status request failed with HTTP $http_code."
+            exit 1
+          fi
+
+          processing=$(jq -r '.processing // false' \
+            /tmp/dtrack-event-response.json)
 
           if [ "$processing" = "false" ]; then
-            break
+            exit 0
           fi
 
           sleep 10
           attempt=$((attempt + 1))
         done
 
-        if [ "$processing" != "false" ]; then
-          echo "Dependency-Track analysis did not complete within the expected time."
-          exit 1
-        fi
-
+        echo "Dependency-Track analysis did not complete within the expected time."
+        exit 1
+        
     - name: Download Dependency-Track findings
       shell: bash
       env:
@@ -127,15 +175,30 @@ runs:
           "${DTRACK_URL%/}/api/v1/finding/project/$DTRACK_PROJECT_UUID")
 
         if [ "$http_code" != "200" ]; then
-          echo "Failed to retrieve findings from Dependency-Track."
+          echo "Failed to retrieve findings from Dependency-Track with HTTP $http_code."
           exit 1
         fi
+
+        if ! jq -e 'type == "array"' /tmp/dtrack-findings.json > /dev/null; then
+          echo "Dependency-Track returned an invalid findings response."
+          exit 1
+        fi
+
+    - name: Initialize CSAF notification baseline
+      if: inputs.email-notification == 'true'
+      shell: bash
+      env:
+        DTRACK_URL: ${{ inputs.dependency-track-url }}
+        DTRACK_API_KEY: ${{ inputs.api-key }}
+        NOTIFICATION_ACTION: initialize
+      run: |
+        python3 "$GITHUB_ACTION_PATH/dependency_track.py"
 
     - name: Generate CycloneDX VEX
       id: generate-vex
       shell: bash
       run: |
-        python "$GITHUB_ACTION_PATH/generate-cyclonedx-vex.py" \
+        python3 "$GITHUB_ACTION_PATH/generate-cyclonedx-vex.py" \
           --findings /tmp/dtrack-findings.json \
           --output /tmp/dtrack-vex.json \
           --project-uuid "$DTRACK_PROJECT_UUID" \
@@ -178,27 +241,18 @@ runs:
         DTRACK_URL: ${{ inputs.dependency-track-url }}
         DTRACK_API_KEY: ${{ inputs.api-key }}
         DTRACK_FINDINGS_FILE: /tmp/dtrack-findings.json
-        SBOM_PATH: ${{ inputs.sbom-file }}
         CSAF_OUTPUT: /tmp/csaf-vex.json
         CSAF_PUBLISHER_NAME: mundialis
         CSAF_PUBLISHER_NAMESPACE: https://mundialis.de
       run: |
-        finding_count=$(jq 'length' /tmp/dtrack-findings.json)
-
-        if [ "$finding_count" -eq 0 ]; then
-          echo "No findings were reported by Dependency-Track. CSAF VEX generation is not required."
-          echo "has-csaf=false" >> "$GITHUB_OUTPUT"
-          exit 0
-        fi
-
-        python "$GITHUB_ACTION_PATH/generate_csaf.py"
+        python3 "$GITHUB_ACTION_PATH/generate_csaf.py"
 
         if [ -s /tmp/csaf-vex.json ]; then
           echo "has-csaf=true" >> "$GITHUB_OUTPUT"
           echo "CSAF VEX generated successfully."
         else
           echo "has-csaf=false" >> "$GITHUB_OUTPUT"
-          echo "Dependency-Track reported findings, but none had an analysis state that could be included in the CSAF VEX."
+          echo "No analyzed findings available for CSAF VEX generation."
         fi
 
     - name: Set up Node.js for CSAF validator
@@ -223,8 +277,6 @@ runs:
       run: |
         npx --yes @secvisogram/csaf-validator-service \
           > /tmp/csaf-validator.log 2>&1 &
-
-        echo $! > /tmp/csaf-validator.pid
 
         for attempt in {1..30}; do
           if curl -sf http://localhost:8082/docs > /dev/null 2>&1; then
@@ -274,3 +326,54 @@ runs:
         fi
 
         echo "CSAF VEX validation succeeded."
+
+    - name: Check if email notification is required
+      id: email-notification
+      if: >
+        inputs.email-notification == 'true' &&
+        steps.generate-csaf.outputs.has-csaf == 'true'
+      shell: bash
+      env:
+        DTRACK_URL: ${{ inputs.dependency-track-url }}
+        DTRACK_API_KEY: ${{ inputs.api-key }}
+        DTRACK_FINDINGS_FILE: /tmp/dtrack-findings.json
+      run: |
+        status=$(python3 "$GITHUB_ACTION_PATH/dependency_track.py")
+
+        send_email=$(echo "$status" | jq -r '.send_email')
+        new_count=$(echo "$status" | jq -r '.new_count')
+        state_change_count=$(echo "$status" | jq -r '.state_change_count')
+        latest_event_timestamp=$(echo "$status" | jq -r '.latest_event_timestamp // empty')
+
+        echo "send-email=$send_email" >> "$GITHUB_OUTPUT"
+        echo "new-count=$new_count" >> "$GITHUB_OUTPUT"
+        echo "state-change-count=$state_change_count" >> "$GITHUB_OUTPUT"
+        echo "latest-event-timestamp=$latest_event_timestamp" >> "$GITHUB_OUTPUT"
+
+    - name: Send CSAF email notification
+      if: steps.email-notification.outputs.send-email == 'true'
+      shell: bash
+      env:
+        SMTP_SERVER: smtp.mailbox.org
+        SMTP_PORT: "587"
+        SMTP_USERNAME: ${{ inputs.email-address }}
+        SMTP_PASSWORD: ${{ inputs.smtp-password }}
+        EMAIL_FROM: ${{ inputs.email-address }}
+        EMAIL_TO: ${{ inputs.email-address }}
+        PROJECT_NAME: ${{ inputs.project-name }}
+        CSAF_FILE: /tmp/csaf-vex.json
+        NEW_COUNT: ${{ steps.email-notification.outputs.new-count }}
+        STATE_CHANGE_COUNT: ${{ steps.email-notification.outputs.state-change-count }}
+      run: |
+        python3 "${{ github.action_path }}/csaf_notification.py"
+
+    - name: Update CSAF notification timestamp
+      if: steps.email-notification.outputs.send-email == 'true'
+      shell: bash
+      env:
+        DTRACK_URL: ${{ inputs.dependency-track-url }}
+        DTRACK_API_KEY: ${{ inputs.api-key }}
+        NOTIFICATION_ACTION: update
+        LATEST_EVENT_TIMESTAMP: ${{ steps.email-notification.outputs.latest-event-timestamp }}
+      run: |
+        python3 "$GITHUB_ACTION_PATH/dependency_track.py"
