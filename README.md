@@ -312,7 +312,7 @@ jobs:
       dependency-track-api-key: ${{ secrets.DEPENDENCY_TRACK_API_KEY }}
       smtp-password: ${{ secrets.CYBERSECURITY_EMAIL_APP_PASSWORD }}
 ```
-For a Python project using `pyproject.toml`, the `with` section can look like this:
+For a Python project using `pyproject.toml` or `requirements.txt`, the `with` section can look like this:
 
 ```yaml
 with:
