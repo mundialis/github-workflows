@@ -8,7 +8,7 @@ COPY test-docker/test.sh /src
 
 RUN test -e test-docker/ && rm -rf test-docker/
 
-RUN apk add gcc make python3-dev musl-dev linux-headers
+RUN apk add gcc make python3-dev musl-dev linux-headers zstd zstd-dev py3-zstandard
 
 # create environment to install requirements
 RUN python -m venv addon-env
