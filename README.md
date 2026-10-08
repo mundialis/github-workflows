@@ -33,10 +33,10 @@ jobs:
 
 ```
 
-or use e.g. `      pylint-version: ''` to skip checks with pylint. (If one of 
+or use e.g. `      pylint-version: ''` to skip checks with pylint. (If one of
 the versions is set to an empty string the code quality check will be skipped.)
 
-Examples how `flake8`, `pylint`, `markdownlint`, `shellcheck` and `ruff` can be 
+Examples how `flake8`, `pylint`, `markdownlint`, `shellcheck` and `ruff` can be
 configured are in the [linting-config-examples](linting-config-examples)
 folder. The `pylint` and `ruff` configuration files do not need to be created if
 they are not to be customized, since they will be copied by the workflow if they
@@ -165,8 +165,8 @@ on:
   release:
     types: [published]
 
-# the workflow does not require permissions, but to avoid a code security warning this should be explicitly defined:
-permissions: {}
+permissions:
+  contents: write
 
 jobs:
   publish-python:
@@ -290,8 +290,9 @@ on:
 jobs:
   sbom-scan:
     permissions:
-      contents: read
+      contents: write
       security-events: write
+      actions: read
 
     uses: mundialis/github-workflows/.github/workflows/sbom-vulnerability-scan.yml@main
 
@@ -372,11 +373,11 @@ Optional inputs:
   notification recipient. In mundialis and actinia-org repositories, use
   the organization variable `CYBERSECURITY_EMAIL`.
 
-When Dependency-Track integration is enabled, the secret `dependency-track-api-key` must be 
+When Dependency-Track integration is enabled, the secret `dependency-track-api-key` must be
 provided by the calling workflow.
 
-When email notifications are enabled, `email-address` and the secret `smtp-password` must also 
-be provided. The mundialis and actinia-org organizations provide the following configuration 
+When email notifications are enabled, `email-address` and the secret `smtp-password` must also
+be provided. The mundialis and actinia-org organizations provide the following configuration
 for this purpose:
 
 - `CYBERSECURITY_EMAIL` as an organization variable.
@@ -416,11 +417,10 @@ on:
   release:
     types: [published]
 
-# the workflow does not require permissions, but to avoid a code security warning this should be explicitly defined:
-permissions: {}
-
 jobs:
   generate-third-party-licenses:
+    permissions:
+      contents: write
     uses: mundialis/github-workflows/.github/workflows/third-party-licenses.yml@main
     with:
       # dockerfile: docker/actinia-core-alpine/Dockerfile
