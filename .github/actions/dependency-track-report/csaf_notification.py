@@ -1,6 +1,8 @@
 import os
 import smtplib
 import ssl
+from datetime import datetime, timezone
+from email.utils import format_datetime
 from email.message import EmailMessage
 from pathlib import Path
 
@@ -29,13 +31,15 @@ def main():
         os.environ.get("CSAF_FILE", "/tmp/csaf-vex.json")
     )
 
+    notification_time = datetime.now(timezone.utc)
+
     if not csaf_file.is_file():
         raise SystemExit("CSAF report does not exist.")
 
     message = EmailMessage()
     message["From"] = email_from
     message["To"] = email_to
-
+    message["Date"] = format_datetime(notification_time)
     if new_count > 0 and state_change_count > 0:
         subject = f"[{project_name}] Vulnerability report updated"
     elif new_count > 0:
