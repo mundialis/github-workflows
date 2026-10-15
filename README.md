@@ -186,8 +186,8 @@ on:
   release:
     types: [published]
 
-# the workflow does not require permissions, but to avoid a code security warning this should be explicitly defined:
-permissions: {}
+permissions:
+  contents: write
 
 jobs:
   publish-python:
