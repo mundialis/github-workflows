@@ -272,7 +272,7 @@ runs:
       if: steps.generate-csaf.outputs.has-csaf == 'true'
       uses: actions/setup-node@v7
       with:
-        node-version: '24'
+        node-version: '26'
 
     - name: Install Hunspell for CSAF validator
       if: steps.generate-csaf.outputs.has-csaf == 'true'
