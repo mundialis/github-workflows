@@ -39,6 +39,10 @@ on:
         required: false
         type: boolean
         default: true
+      HADOLINT_FAILURE_THRESHOLD:
+        required: false
+        type: string
+        default: 'error'
       VALIDATE_GITHUB_ACTIONS:
         required: false
         type: boolean
@@ -221,6 +225,7 @@ jobs:
           VALIDATE_BASH_EXEC: "${{ inputs.VALIDATE_BASH_EXEC == true && true || '' }}"
           VALIDATE_CSS: "${{ inputs.VALIDATE_CSS == true && true || '' }}"
           VALIDATE_DOCKERFILE_HADOLINT: "${{ inputs.VALIDATE_DOCKERFILE_HADOLINT == true && true || '' }}"
+          HADOLINT_FAILURE_THRESHOLD: ${{ inputs.HADOLINT_FAILURE_THRESHOLD }}
           VALIDATE_GITHUB_ACTIONS: "${{ inputs.VALIDATE_GITHUB_ACTIONS == true && true || '' }}"
           VALIDATE_HTML: "${{ inputs.VALIDATE_HTML == true && true || '' }}"
           VALIDATE_JAVASCRIPT_ES: "${{ inputs.VALIDATE_JAVASCRIPT_ES == true && true || '' }}"
