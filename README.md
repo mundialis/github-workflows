@@ -234,8 +234,8 @@ jobs:
 
 The SBOM vulnerability scan workflow generates a CycloneDX SBOM and scans
 dependencies for known vulnerabilities with Grype. The workflow supports
-Docker images as well as Python projects using either `requirements.txt`
-or `pyproject.toml`.
+Docker images, Python projects using either `requirements.txt`
+or `pyproject.toml` and static security scanning of Jupyter notebooks.
 
 For Docker-based projects, the SBOM is generated from the built container
 image and scanned with Grype. For Python projects, a virtual environment is
@@ -326,6 +326,25 @@ with:
   email-notification: true
   email-address: ${{ vars.CYBERSECURITY_EMAIL }}
 ```
+For a repository containing Jupyter notebooks, the `with` section can look like this:
+
+```yaml
+with:
+  notebooks: notebooks
+```
+
+The `notebooks` input can point to a single `.ipynb` file or to a directory containing notebooks.
+
+If reviewed `detect-secrets` findings should be ignored, a repository-specific baseline can optionally be provided:
+
+```yaml
+with:
+  notebooks: notebooks
+  notebook-detect-secrets-baseline: .github/notebook-secrets-baseline.json
+```
+
+Notebook scanning can be used on its own or together with one of the Docker or Python scan targets.
+
 For repositories where GitHub Code Scanning is not available, the GitHub
 Security upload can be disabled while still using Dependency-Track:
 
@@ -334,12 +353,17 @@ with:
   github-security: false
   dependency-track: true
 ```
-
-Provide exactly one of the following inputs:
+Provide at most one dependency scan target:
 
 - `dockerfile`: Path to the Dockerfile.
 - `requirements`: Path to the `requirements.txt` file.
 - `pyproject`: Path to the `pyproject.toml` file.
+
+Jupyter notebooks can additionally or independently be scanned with:
+
+- `notebooks`: Path to a Jupyter notebook or directory containing notebooks.
+
+At least one scan target must be provided.
 
 The calling job requires the following permissions:
 
@@ -350,6 +374,8 @@ The calling job requires the following permissions:
 Optional inputs:
 - `fetch_depth`: Number of commits to fetch during checkout. Use `0` to fetch the full history
  and tags. Default: `1`.
+- `notebook-detect-secrets-baseline`: Path to a repository-specific `detect-secrets` baseline
+ used for Jupyter notebook scanning.
 - `fail-build`: Set to `true` if the workflow should fail when vulnerabilities above the severity
  cutoff are found. Default: `false`.
 - `github-security`: Upload vulnerability scan results to GitHub Security. Default: `true`.
