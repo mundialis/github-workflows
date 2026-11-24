@@ -247,6 +247,15 @@ runs:
           exit 1
         fi
 
+    - name: Download CWE catalog
+      shell: bash
+      run: |
+        curl --fail --location --retry 3 \
+          https://cwe.mitre.org/data/xml/cwec_v5.0.xml.zip \
+          --output /tmp/cwec_v5.0.xml.zip
+
+        unzip -t /tmp/cwec_v5.0.xml.zip
+
     - name: Generate CSAF VEX
       id: generate-csaf
       shell: bash
@@ -255,6 +264,7 @@ runs:
         DTRACK_API_KEY: ${{ inputs.api-key }}
         DTRACK_FINDINGS_FILE: /tmp/dtrack-findings.json
         CSAF_OUTPUT: /tmp/csaf-vex.json
+        CWE_CATALOG_FILE: /tmp/cwec_v5.0.xml.zip
         CSAF_PUBLISHER_NAME: ${{ inputs.csaf-publisher-name }}
         CSAF_PUBLISHER_NAMESPACE: ${{ inputs.csaf-publisher-namespace }}
       run: |
@@ -288,7 +298,7 @@ runs:
       if: steps.generate-csaf.outputs.has-csaf == 'true'
       shell: bash
       run: |
-        npx --yes @secvisogram/csaf-validator-service \
+        npx --yes @secvisogram/csaf-validator-service@3.0.6 \
           > /tmp/csaf-validator.log 2>&1 &
 
         for attempt in {1..30}; do
@@ -300,7 +310,6 @@ runs:
         done
 
         echo "CSAF validator did not start."
-        cat /tmp/csaf-validator.log
         exit 1
 
     - name: Validate CSAF VEX
@@ -326,17 +335,12 @@ runs:
             -w "%{http_code}")
 
         if [ "$http_code" != "200" ]; then
-          echo "CSAF Validator service request failed with HTTP code $http_code."
-          echo "Validator error:"
-          jq -r '.message // .error // "Unknown validator error"' \
-            /tmp/csaf-validation-result.json
+          echo "CSAF Validator service request failed."
           exit 1
         fi
 
         if [ "$(jq -r '.isValid' /tmp/csaf-validation-result.json)" != "true" ]; then
-          echo "CSAF VEX validation failed."
-          echo "Full validator response:"
-          jq . /tmp/csaf-validation-result.json
+          echo "CSAF VEX validation failed. Review the generated document in an authorized environment."
           exit 1
         fi
 

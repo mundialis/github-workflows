@@ -1,7 +1,10 @@
 import json
 import os
+import zipfile
+import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
+
 from dependency_track import get_analysis, validate_config
 
 INPUT = Path(
@@ -23,6 +26,9 @@ STATE_MAP = {
     "EXPLOITABLE": "known_affected",
 }
 
+CWE_CATALOG_FILE = Path(
+    os.environ.get("CWE_CATALOG_FILE", "/tmp/cwec_v5.0.xml.zip")
+)
 CSAF_SELF_URL = os.environ.get("CSAF_SELF_URL")
 
 CSAF_PUBLISHER_NAME = os.environ.get("CSAF_PUBLISHER_NAME")
@@ -32,6 +38,20 @@ CSAF_PUBLISHER_NAMESPACE = os.environ.get(
 )
 
 CSAF_DOCUMENT_ID = os.environ.get("CSAF_DOCUMENT_ID")
+
+def load_cwe_catalog():
+    """Load official CWE identifiers and names from the MITRE catalog."""
+    with zipfile.ZipFile(CWE_CATALOG_FILE) as archive:
+        with archive.open("cwec_v5.0.xml") as xml_file:
+            root = ET.parse(xml_file).getroot()
+
+    if root.get("Version") != "5.0":
+        raise ValueError("Unexpected CWE catalog version")
+
+    return {
+        f'CWE-{weakness.get("ID")}': weakness.get("Name")
+        for weakness in root.findall(".//{*}Weakness")
+    }
 
 
 def build_product_tree(
@@ -237,7 +257,7 @@ STATE_HANDLERS = {
 }
 
 
-def build_vulnerability_entry(finding, analysis):
+def build_vulnerability_entry(finding, analysis, cwe_catalog):
     component = finding["component"]
     vulnerability = finding["vulnerability"]
 
@@ -281,12 +301,16 @@ def build_vulnerability_entry(finding, analysis):
     )
 
     cwes = vulnerability.get("cwes", [])
-    if cwes:
-        entry["cwe"] = {
-            "id": f'CWE-{cwes[0]["cweId"]}',
-            "name": cwes[0]["name"],
-        }
 
+    if cwes:
+        cwe_id = f'CWE-{cwes[0]["cweId"]}'
+        cwe_name = cwe_catalog.get(cwe_id)
+
+        if cwe_name:
+            entry["cwe"] = {
+                "id": cwe_id,
+                "name": cwe_name,
+            }
     return entry
 
 def main():
@@ -297,6 +321,7 @@ def main():
         raise SystemExit("CSAF_PUBLISHER_NAMESPACE is not set")
 
     validate_config()
+    cwe_catalog = load_cwe_catalog()
 
     with INPUT.open() as f:
         findings = json.load(f)
@@ -317,6 +342,7 @@ def main():
         vulnerability_entry = build_vulnerability_entry(
             finding,
             full_analysis,
+            cwe_catalog,
         )
 
         if vulnerability_entry:
