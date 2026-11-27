@@ -286,6 +286,7 @@ on:
 
 jobs:
   sbom-scan:
+    # if: ${{ github.repository_owner == 'mundialis' }}
     permissions:
       contents: write
       security-events: write
@@ -310,6 +311,8 @@ jobs:
       dependency-track-api-key: ${{ secrets.DEPENDENCY_TRACK_API_KEY }}
       smtp-password: ${{ secrets.CYBERSECURITY_EMAIL_APP_PASSWORD }}
 ```
+If the workflow should not run on folks, then uncomment the row `# if: ${{ github.repository_owner == 'mundialis' }}` and check if mundailis is the correct owner or should be replaced.
+
 For a Python project using `pyproject.toml` or `requirements.txt`, the `with` section can look like this (Note: all other blocks e.g. `secrets` as above):
 
 ```yaml
